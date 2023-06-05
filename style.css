@@ -1,0 +1,181 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Times New Roman", Times, serif;
+  margin: 1em 0;
+  font-size: 18px;
+  overflow-x: hidden;
+  background-color: white;
+  text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+}
+
+p, li {
+  line-height: 1.375em;
+}
+
+p, h2, h3 {
+  margin: 18px 0;
+}
+
+.list-style-outside {
+  list-style-position: outside;
+}
+
+/* container */
+
+.container {
+  width: 90%;
+  max-width: 736px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* image */
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.image {
+  max-height: 100%;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+}
+
+/* code */
+
+pre {
+  background-color: #f6f6f6;
+  margin: none;
+  overflow-x: auto;
+  font-size: 0.8em;
+  padding: 15px;
+}
+
+pre::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  background: linear-gradient(to left, rgba(246, 246, 246, 0), rgba(246, 246, 246, 1));
+}
+
+code {
+  padding: 0 !important;
+  line-height: 1.5em;
+  margin: 0;
+  background-color: #f6f6f6 !important;
+  font-family: 'Fira Mono', monospace;
+}
+
+.inline-code {
+  font-family: 'Fira Mono', monospace;
+  font-size: 0.85em;
+}
+
+/* math */
+
+.math {
+  margin: 0;
+  overflow-x: auto;
+}
+
+.mjx-chtml.MJXc-display { 
+  margin: 0 !important;
+}
+
+/* pseudocode */
+
+.pscode {
+  width: 100%; /* or set it as needed */
+  overflow-x: auto;
+  padding: 15px 0;
+  box-sizing: content-box;
+  margin: 1em 0;
+  background-color: #f6f6f6;
+}
+
+.pscode-content {
+  min-width: 100%;
+  width: max-content;
+  padding: 0 15px;
+}
+
+.width-100 {
+  width: 100% !important;
+}
+
+.border-top {
+  border-top: 1px solid black;
+}
+
+.border-bottom {
+  border-bottom: 1px solid black;
+}
+
+.pad-top-25e-2em {
+  padding-top: 0.25em;
+}
+
+.pad-bottom-25e-2em {
+  padding-bottom: 0.25em;
+}
+
+.pscode-content > p {
+  line-height: 1.5em;
+  white-space: nowrap;
+  width: fit-content;
+  margin: 0;
+}
+
+/* back and caption */
+
+#back {
+  font-size: 1.2em;
+  text-decoration: none;
+}
+
+.caption {
+  margin: none;
+  text-align: center;
+  color: grey;
+  font-size: 0.8em;
+}
+
+/* media queries */
+
+@media (max-width: 708px) {
+  body {
+    font-size: 16px;
+  }
+
+  p, h2, h3 {
+    margin: 16px 0;
+  }
+  
+  .container {
+    width: 97.5%;
+  }
+}
+
+@media (max-width: 384px) {
+  body {
+    font-size: 15px;
+  }
+
+  p, h2, h3 {
+    margin: 15px 0;
+  }
+}
