@@ -182,12 +182,12 @@
     <p>
       where $j$ is the mean and variance vector index and $J$ is the dimension of the latent.
       Now we consider the expected log probability term. The probability is parametrized by $\theta$
-      since it's the decoder prediction. Let $x = D_{\theta}(z)$ be the decoder reconstruction
+      since it depends on the mean and standard deviation predicted by the decoder
     </p>
 
     <p class="math">
       $$\begin{align*}\log p_{\theta}(x\,|\,z)
-      &= \log{\frac{1}{\sqrt{2\pi \sigma^2}}\exp{\left(-\frac{(D_{\theta}(z) - \mu)^2}{2\sigma^2}\right)}} \\
+      &= \log{\frac{1}{\sqrt{2\pi \sigma^2}}\exp{\left(-\frac{(x - \mu)^2}{2\sigma^2}\right)}} \\
       &= -\frac{1}{2}\log{2\pi\sigma^2} - \frac{(x - \mu)^2}{2\sigma^2} \\
       &= -\log{\sigma} - \frac{(x - \mu)^2}{2\sigma^2}
       \end{align*}$$
