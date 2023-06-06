@@ -151,13 +151,13 @@
 
     <p class="math">
       $$\begin{align*}
-      q_{\phi}(z\,|\,x) &= \mathcal{N}(z\,|\,\mu=E(x)_{\mu}, \sigma^2=E(x)_{\sigma^2}) \\
+      q_{\phi}(z\,|\,x) &= \mathcal{N}(z\,|\,\mu=E_{\phi}(x)_{\mu}, \sigma^2=E_{\phi}(x)_{\sigma^2}) \\
       &= \frac{1}{\sqrt{2\pi\sigma^2}}\exp{\left(-\frac{(z - \mu)^2}{2\sigma^2}\right)}
       \end{align*}$$
     </p>
 
     <p>
-      where $E$ is the encoder neural net. The prior is just the standard Gaussian
+      where $E_{\phi}$ is the encoder neural net. The prior is just the standard Gaussian
       $\mathcal{N}(0, 1)$ so our KL divergence after substituting becomes
     </p>
 
