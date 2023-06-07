@@ -11,7 +11,7 @@ body {
   font-family: "Executive", "Times New Roman", Times, serif;
   margin: 1em 0;
   font-size: 22px;
-  letter-spacing: -1px;
+  letter-spacing: -0.5px;
   overflow-x: hidden;
   background-color: white;
   text-size-adjust: none;
@@ -85,11 +85,13 @@ code {
   background-color: #f6f6f6 !important;
   font-family: 'Fira Mono', monospace;
   font-size: 0.8em;
+  letter-spacing: normal; 
 }
 
 .inline-code {
   font-family: 'Fira Mono', monospace;
   font-size: 0.65em;
+  letter-spacing: normal;
 }
 
 /* math */
@@ -112,6 +114,7 @@ code {
   box-sizing: content-box;
   margin: 1em 0;
   background-color: #f6f6f6;
+  letter-spacing: normal;
 }
 
 .pscode-content {
