@@ -2,10 +2,15 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: "Executive";
+  src: url("./executive.ttf");
+}
+
 body {
-  font-family: "Times New Roman", Times, serif;
+  font-family: "Executive", "Times New Roman", Times, serif;
   margin: 1em 0;
-  font-size: 18px;
+  font-size: 22px;
   overflow-x: hidden;
   background-color: white;
   text-size-adjust: none;
@@ -78,11 +83,12 @@ code {
   margin: 0;
   background-color: #f6f6f6 !important;
   font-family: 'Fira Mono', monospace;
+  font-size: 0.8em;
 }
 
 .inline-code {
   font-family: 'Fira Mono', monospace;
-  font-size: 0.85em;
+  font-size: 0.65em;
 }
 
 /* math */
@@ -158,11 +164,11 @@ code {
 
 @media (max-width: 708px) {
   body {
-    font-size: 16px;
+    font-size: 20px;
   }
 
   p, h2, h3 {
-    margin: 16px 0;
+    margin: 20px 0;
   }
   
   .container {
@@ -172,10 +178,10 @@ code {
 
 @media (max-width: 384px) {
   body {
-    font-size: 15px;
+    font-size: 18px;
   }
 
   p, h2, h3 {
-    margin: 15px 0;
+    margin: 18px 0;
   }
 }
