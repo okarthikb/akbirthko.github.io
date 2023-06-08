@@ -11,7 +11,7 @@ body {
   width: 100%;
   font-family: "Century Schoolbook", "Times New Roman", Times, serif;
   margin: 1em 0;
-  font-size: 16px;
+  font-size: 17px;
   overflow-x: hidden;
   background-color: white;
   text-size-adjust: none;
@@ -19,7 +19,7 @@ body {
 }
 
 p, li {
-  line-height: 1.4em;
+  line-height: 1.5em;
 }
 
 p, h2, h3 {
@@ -145,7 +145,7 @@ code {
 }
 
 .pscode-content > p {
-  line-height: 1.4em;
+  line-height: 1.5em;
   white-space: nowrap;
   width: fit-content;
   margin: 0;
