@@ -20,7 +20,7 @@ body {
 }
 
 p, li {
-  line-height: 1.25em;
+  line-height: 1.2em;
 }
 
 p, h2, h3 {
@@ -35,7 +35,7 @@ p, h2, h3 {
 
 .container {
   width: 90%;
-  max-width: 768px;
+  max-width: 832px;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
@@ -178,7 +178,7 @@ code {
   }
   
   .container {
-    width: 97.5%;
+    width: 98%;
   }
 }
 
