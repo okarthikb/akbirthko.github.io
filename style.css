@@ -8,10 +8,11 @@
 }
 
 body {
+  width: 100%;
   font-family: "Executive", "Times New Roman", Times, serif;
   margin: 1em 0;
   font-size: 22px;
-  letter-spacing: -0.7px;
+  letter-spacing: -0.5px;
   overflow-x: hidden;
   background-color: white;
   text-size-adjust: none;
@@ -19,7 +20,7 @@ body {
 }
 
 p, li {
-  line-height: 1.375em;
+  line-height: 1.3em;
 }
 
 p, h2, h3 {
@@ -34,7 +35,7 @@ p, h2, h3 {
 
 .container {
   width: 90%;
-  max-width: 736px;
+  max-width: 768px;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
@@ -62,6 +63,7 @@ p, h2, h3 {
 
 pre {
   background-color: #f6f6f6;
+  position: relative;
   margin: none;
   overflow-x: auto;
   font-size: 0.8em;
@@ -74,8 +76,8 @@ pre::after {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 20px;
-  background: linear-gradient(to left, rgba(246, 246, 246, 0), rgba(246, 246, 246, 1));
+  width: 25px;
+  background: linear-gradient(to left, rgba(246, 246, 246, 0), rgba(246, 246, 246, 0.75));
 }
 
 code {
@@ -144,7 +146,7 @@ code {
 }
 
 .pscode-content > p {
-  line-height: 1.5em;
+  line-height: 1.4em;
   white-space: nowrap;
   width: fit-content;
   margin: 0;
