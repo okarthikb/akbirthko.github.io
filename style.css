@@ -33,10 +33,10 @@ p, h2, h3 {
 /* container */
 
 .container {
-  width: 97%;
+  width: 98%;
   max-width: 832px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px 15px;
   box-sizing: border-box;
   overflow-x: hidden;
 }
@@ -142,6 +142,10 @@ code {
 
 .pad-bottom-25e-2em {
   padding-bottom: 0.25em;
+}
+
+.bg-very-light-purple {
+  background-color: rgba(255, 0, 255, 0.075)
 }
 
 .pscode-content > p {

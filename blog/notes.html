@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <!-- meta -->
+  <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport" />
+  <link href="../style.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Mono&amp;display=swap"
+    rel="stylesheet" />
+
+  <!-- mathjax -->
+  <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [
+          ['$', '$'],
+        ],
+        displayMath: [
+          ['$$', '$$'],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+        packages: ['base', 'ams']
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    });
+  </script>
+
+  <!-- code highlight -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css"
+    rel="stylesheet" />
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+  <script> hljs.highlightAll(); </script>
+
+  <title>Notes</title>
+
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Notes</h2>
+
+    <p class="border-bottom pad-bottom-25e-2em">
+      9 June 2023
+      <br />
+      <a href="../index.html" id="back">←</a>
+    </p>
+
+    <br>
+
+    <h3> VDMs, Tweedie's formula </h3>
+
+    <p>
+      GPT-4's explanation of a section in page 16 of this <a
+        href="https://arxiv.org/abs/2208.11970">paper</a>:
+    </p>
+
+    <p class="bg-very-light-purple">
+      Ah, I see. Your equation relates to the context of Variational Inference, particularly in
+      Variational Autoencoders (VAEs) or in this case, Variational Diffusion Models. This formula
+      looks a lot like the reparameterization trick, a key idea in training VAEs or any model where
+      you are performing gradient-based optimization over a distribution's parameters.
+    </p>
+
+    <p class="bg-very-light-purple">
+      Let's denote $z$ as a random variable sampled from a multivariate Gaussian distribution with
+      parameters $\mu$ and $\Sigma$. The probability density function of $z$ is $p(z)$. In the
+      reparameterization trick, we express the random variable $z$ as a deterministic variable
+      transformed by a stochastic operation that doesn't depend on any parameters. In the simplest
+      case of a Gaussian distribution, this would look like $z = \mu + \epsilon \Sigma$, where
+      $\epsilon$ is standard normal noise.
+    </p>
+
+    <p class="bg-very-light-purple">
+      The expectation of $z$ under the distribution $p(z)$ is $\mathbb{E}[z] = \int z p(z) dz$,
+      where the integral is taken over the whole space that $z$ is defined on. In practice, we want
+      to compute gradients of this expectation with respect to the distribution's parameters (which
+      are in $p(z)$).
+    </p>
+
+    <p class="bg-very-light-purple">
+      The reparameterization trick lets us move the gradient inside the expectation, which we can
+      approximate by sampling. So the formula $\mathbb{E}[\mu_z | z] = z + \sum_z \nabla_z\log p(z)$
+      might be part of an argument showing that we can compute the gradient of the expectation with
+      respect to the distribution's parameters.
+    </p>
+
+    <p class="bg-very-light-purple">
+      The term $\sum_z \nabla_z\log p(z)$ represents the gradient of the log probability of $z$
+      summed over all dimensions of $z$, and is known as the score function. It gives the direction
+      in which the log probability under the distribution increases the fastest.
+    </p>
+
+    <p class="bg-very-light-purple">
+      Please note that the exact interpretation might depend on additional context from the paper.
+      However, based on your description and the formula, it's likely that this is a discussion of
+      how to compute gradients with respect to the parameters of the distribution that $z$ is
+      sampled from, which is a key idea in Variational Inference and related models.
+    </p>
+
+    <p>
+      Continued, I share the following section from the paragraph in the paper:
+    </p>
+
+    <p>
+      <i>To derive the third common interpretation of Variational Diffusion Models, we appeal to
+        Tweedie's Formula [8]. In English, Tweedie's Formula states that the true mean of an
+        exponential family distribution, given samples drawn from it, can be estimated by the
+        maximum
+        likelihood estimate of the samples (aka empirical mean) plus some correction term involving
+        the score of the estimate. In the case of just one observed sample, the empirical mean is
+        just
+        the sample itself. It is commonly used to mitigate sample bias; if observed samples all lie
+        on
+        one end of the underlying distribution, then the negative score becomes large and corrects
+        the
+        naive maximum likelihood estimate of the samples towards the true mean.</i>
+    </p>
+
+    <p class="bg-very-light-purple">
+      The formula you provided seems to be a form of Tweedie's formula for the exponential family,
+      adapted for a multivariate Gaussian (which is a member of the exponential family). Here is the
+      intuition for this formula in the context of Variational Diffusion Models:
+
+      In general, Tweedie's formula provides an estimator for the true mean of a distribution given
+      samples drawn from it. This estimator is constructed as the sum of two terms: the empirical
+      mean (the average of the samples) and a correction term involving the score of the estimate
+      (the gradient of the log likelihood).
+    </p>
+
+    <p class="bg-very-light-purple">
+      In the case of a multivariate Gaussian, if we have just one sample, the empirical mean is just
+      that sample, represented as $z$ in your formula. So, the first part of the formula, $z$,
+      simply represents the empirical mean.
+
+      The second part, $\nabla_z\log p(z)$, is the score function, which is the gradient of the
+      log-likelihood of the Gaussian distribution with respect to the sampled point $z$. This score
+      function provides information about how likely the sample is under the distribution: if the
+      sample is highly likely, the score is small, but if the sample is unlikely, the score is
+      large.
+    </p>
+
+    <p class="bg-very-light-purple">
+      The intuition behind Tweedie's formula is that it's a way to correct for sample bias. When you
+      sample from a distribution, especially with a small number of samples, you might get samples
+      that are not representative of the true mean of the distribution. By adding this score
+      correction term to the empirical mean, you "pull" the estimate towards regions of higher
+      likelihood, counteracting the potential bias in the samples.
+    </p>
+    
+    <p class="bg-very-light-purple">
+      The formula $\mathbb{E}[\mu_z | z] = z + \sum_z \nabla_z\log p(z)$ is saying: the expected
+      true mean $\mu_z$ given the sample $z$, is the empirical mean (the sample itself) plus a
+      correction term (the score function), which will adjust the estimate towards regions of the
+      distribution with higher density.
+
+      So, in the context of Variational Diffusion Models, this formula is saying that if you sample
+      a point $z$ from your model's learned distribution, you can estimate the true mean of the
+      underlying data distribution by considering this sampled point and a correction term that
+      considers how likely this point is under the learned distribution.
+    </p>
+  </div>
+
+</body>
+
+</html>
