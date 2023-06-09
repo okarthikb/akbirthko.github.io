@@ -109,7 +109,7 @@ code {
 /* pseudocode */
 
 .pscode {
-  width: 100%; /* or set it as needed */
+  width: 100%;
   overflow-x: auto;
   padding: 15px 0;
   box-sizing: content-box;
