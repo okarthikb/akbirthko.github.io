@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <!-- meta -->
+  <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport" />
+  <link href="./style.css" rel="stylesheet" type="text/css" />
+
+  <!-- mathjax -->
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [
+          ['$', '$']
+        ],
+        displayMath: [
+          ['$$', '$$']
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+        packages: ['base', 'ams']
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    });
+  </script>
+
+  <!-- code highlight -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+  <script> hljs.highlightAll(); </script>
+
+  <style>
+    .strike {
+      position: relative;
+    }
+
+    .strike::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, transparent calc(50% - 1px), #cd3700, transparent calc(50% + 1px));
+    }
+  </style>
+ 
+  <title> Entropy (Information Theory) </title>
+
+</head>
+
+<body> 
+  <div class="container">
+    <h2 class="title"> Information Theory and Language Modelling </h2>
+
+    <h3>
+      <a class="heading" id="entropy" href="#entropy">Entropy</a>
+    </h3>
+
+    <p>
+      We try to answer the question: what is the maximum possible data compression?
+    </p>
+   
+    <p>
+      Suppose you have $m$ messages and an alphabet (set) $\mathcal{A}$ with $m$ symbols. The messages are generated with equal probability by some data source and you want to transmit them. Then to transmit the messages, you can simply associate each message with a symbol and send the symbols over. Suppose you have 16 messages that you choose from with equal probability and an alphabet of 2 symbols, and say, the symbols are 0 and 1. Then one can encode the messages as binary numbers and you would use 4 symbols or 4 information units per message. We call the information units here "bits" (short for "binary digit"). We let the symbols just be the natural numbers and the largest natural number we use is the size of the alphabet $\mathcal{A}$. When the 16 messages are sampled with equal probability and we use 2 symbols, we see that we require 4 symbols - or bits - to encode each message. If our alphabet contained 16 symbols instead of 2, we'll just need 1 symbol to encode each message. Encoded message would contain 1 unit of information, where the unit here is a "hex digit".
+    </p>
+
+    <p>
+      It's "bits" when you have an alphabet of size 2, but it can be arbitrary. In general, if the alphabet size is $b$ and you sample from $m$ messages <i>uniformly</i>, then the number of symbols required to encode (i.e., index or identify) each message is $\log_b{m}$. Why? It's the minimum number of questions we need to ask to determine a particular message. $b$ symbols means we can identify $b$ things. Split the $m$ messages into $b$ groups and ask which of the groups contains the message. We can identify the group with one of the $b$ symbols. Then we split the group into $b$ groups of its own and ask again which of the groups contains the message. We identify again the group using one of the $b$ symbols. How many questions do we need to ask, i.e., how many times $p$ do we need to split by $b$ until our group size is 1? Solving $m / b^p = 1$ for $p$ gives us $p = \log_b{m}$ splits, and hence, $p$ questions or symbols. $p$ is the number of digits required to represent $m$ in base $b$.
+    </p>
+    
+    <p>
+      Now, I sample $n$ messages uniformly and transmit them. How many bits did I send? It's just $4n$, since each message requires 4 bits. Suppose now that the probability distribution of the 16 messages is non-uniform, i.e., some messages are more likely to be sampled than others. Using the same number of bits to encode each message here is not optimal. I can use less than $4n$ bits to send $n$ messages (sampled from the 16) now since I can use fewer bits to represent the more likely messages and more bits to represent the less likely messages. So I keep sampling messages from the set of 16 messages and sending them over, and most of the time I'm only sending the few bits required to represent the more likely messages, and very occasionally, I use some extra bits to represent the less likely messages.
+    </p>
+
+    <p>
+      What's the optimal number of bits to allocate to encode each message? We'll answer this shortly. We first ask, what's the <i>average</i> number of bits required to encode each message assuming every message was encoded with the optimal number of bits? In the uniform sampling case, every message is represented using the same number of bits, so the average number of bits is also the same. In the non-uniform case, suppose that for $m$ messages, the probability of message $i$ is $p_i$. Shannon showed that the average number of bits required to encode each message here is
+    </p>
+
+    <p class="display-math">
+      $$H = \sum_{i = 1}^m p_i \log_2{\frac{1}{p_i}} \tag{1}$$
+    </p>
+
+    <p>
+      and this is the optimal number of bits. This is called the entropy or self information of the message variable. When all $p_i$ are equal (uniform sampling), $H$ becomes $\log_2 m$, which we already saw. To send $n$ messages sampled from a set of 16 messages, instead of $4n$ bits, we only need to send $Hn$ bits and $H$ will be less 4, i.e., the average number of bits required to encode each message is less than that of the uniform case. The exact proof for $(1)$ is rather involved, but we can glean the intuition.
+    </p>
+
+    <p>
+      Let's say we have a non-uniform probability distribution over 8 messages – $1/4,$ $1/4,$ $1/8,$ $1/8,$ $1/16,$ $1/16,$ $1/16,$ $1/16.$ Our goal is to use an alphabet - here 0 and 1 - to identify a particular message. We sample a message from the probability distribution, get its associated symbolic representation - here, a binary number - and send it over. We want to minimize the <i>average</i> number of symbols - here, bits - we use. Suppose we have already sampled a huge number of messages and sent it over. Then we would expect that a fourth of the messages would be message 1, another fourth to be message 2, an eigth will be message 3, and so on. In the limit, we would expect that the fraction of messages that are message $i$ is exactly $p_i$ (as a consequence of the law of large numbers). The sequence of messages sent might look like so: $1,$ $2,$ $2,$ $1,$ $2,$ $1,$ $2,$ $1,$ $3,$ $1,$ $3,$ $8, \ldots$
+    </p>
+
+    <p>
+      We then sort the messages in ascending order of probability. The first quarter will be 1s. To encode message 1 with $p_1 = 1/4$ then, we'd say that it's the message in the first quarter if we sort all the messages in ascending order of probability. To indicate a quarter, we'll need 2 bits (a bit to determine which half, and another to determine which half in that half). You'll notice that
+    </p>
+    
+    <p class="display-math">
+      \begin{align*}
+      \text{# bits} &= 2 \\
+          &= \log_2(1/4) \\
+          &= \log_2(1/p_1)
+      \end{align*}
+    </p>
+
+    <p>
+      i.e., the number of bits is the number of times we need to split the sorted list of messages to identify or specify our message. The second quarter will contain message 2, and for this too, we need 2 bits to specify. The probability $p_i$ of the message getting sampled determines the number of times $1/p_i$ we need to split the sorted list of messages to identify the message (in the limit of a large number of messages), which determines the number of bits we need to identify it. In general, the number of bits required to identify a message (or event!) of probability $p$ is $\log_2(1/p)$ (the number of yes/no questions you must ask). Since message $i$ occurs $p_i$ fraction of the time, its net contribution is $p_i \log_2(1/p_i)$ bits. Summing over all messages gives us the average number of bits required to encode each message, and this is just the entropy $H$ in $(1)$.
+    </p>
+
+  </div>
+</body>
+</html>
