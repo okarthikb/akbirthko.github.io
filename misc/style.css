@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('Open-Sans-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('Lato-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  src: url('FiraCode-Regular.ttf');
+}
+
+::selection {
+  background: #454545;
+  color: whitesmoke;
+}
+
+body {
+  font-size: 16px;
+  font-family: 'Lato', sans-serif;
+  color: #454545;
+}
+
+.container {
+  max-width: 748px;
+  margin: 3em auto 4em auto;
+  padding: 0 0.75em;
+}
+
+.title {
+  text-align: center;
+  border-bottom: 3px #d0d0d0 solid;
+  padding-bottom: 0.1em;
+  margin-bottom: 1.5em;
+}
+
+h2, h3 {
+  margin-top: 1.5em;
+}
+
+.heading {
+  color: #454545 !important;
+  border-bottom: 2px #d0d0d0 solid;
+  padding-bottom: 0.1em;
+}
+
+.heading:hover {
+  border-bottom: 2px #454545 solid;
+}
+
+p {
+  line-height: 1.75em !important;
+}
+
+a {
+  color: #27408b;
+  text-decoration: none;
+}
+
+ul, ol {
+  line-height: 1.75em !important;
+}
+
+a:visited {
+  color: #00688b;
+}
+
+code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95em;
+}
+
+pre > code {
+  background: whitesmoke !important; 
+}
+
+.display-math {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.mjx-chtml.MJXc-display {
+  margin: 0 !important;
+}
+
+@media screen and (max-width: 512px) {
+  body {
+    font-size: 14px;
+  }
+}
