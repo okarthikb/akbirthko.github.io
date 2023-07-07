@@ -37,6 +37,10 @@ body {
   margin-top: 0.25em;
 }
 
+.title:hover {
+  border-bottom: 3px #454545 solid;
+}
+
 .heading {
   color: #454545 !important;
   border-bottom: 2px #d0d0d0 solid;
