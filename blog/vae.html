@@ -6,10 +6,6 @@
   <!-- meta -->
   <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport" />
   <link href="../style.css" rel="stylesheet" type="text/css" />
-  <link href="https://fonts.googleapis.com" rel="preconnect" />
-  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Mono&amp;display=swap"
-    rel="stylesheet" />
 
   <!-- mathjax -->
   <script type="text/javascript" async
@@ -47,17 +43,11 @@
 <body>
 
   <div class="container">
-    <h2> Variational Auto-Encoders (personal notes) </h2>
+    <a id="back" href="../index.html">←</a>
 
-    <p class="border-bottom pad-bottom-25e-2em">
-      3 June 2023
-      <br />
-      <a href="../index.html" id="back">←</a>
-    </p>
+    <h2 class="title"> Variational Auto-Encoders (notes) </h2>
 
-    <br />
-
-    <h3> Deriving ELBO for VAE </h3>
+    <h3> <a id="ELBO" href="#ELBO" class="heading"> Deriving ELBO </a> </h3>
 
     <p>
       The goal of a VAE is to learn a latent representation of the data. We do this by mapping
@@ -68,7 +58,7 @@
     </p>
 
     <p>
-      VAEs were introduced in this <a href="https://arxiv.org/abs/1312.6114">paper</a> by Kingma et
+      VAEs were introduced in <a id="b1" href="#1"> [1] </a> by Kingma et
       al. Their input distribution consists of binary values instead of real values, and the goal
       is to maximize the likelihood of the data for generation. Suppose we sampled $z$ from a
       distribution and then the data $x$ from a distribution conditioned on $z$. The likelihood of
@@ -80,7 +70,8 @@
     </p>
 
     <p>
-      Maximizing this likelihood using gradient descent is however intractable, so we instead find a lower
+      Maximizing this likelihood using gradient descent is however intractable, so we instead find a
+      lower
       bound for the likelihood and maximize that. Specifically, we find a lower bound for the log
       likelihood, which is equivalent. Recall from Bayes' theorem that
     </p>
@@ -90,7 +81,7 @@
     </p>
 
     <p>
-      Now we do a li'l trick. We write the log prob as an expectation over $z$, which lets us do
+      Now we write the log prob as an expectation over $z$, which lets us do
       some simplification
     </p>
 
@@ -127,9 +118,8 @@
       which is called the Evidence Lower Bound (ELBO) or the variational lower bound.
     </p>
 
-    <br />
-
-    <h3> Closed-form loss expression for Gaussian prior </h3>
+    <h3> <a id="closed-form" href="#closed-form" class="heading"> Closed-form loss for Gaussian
+        prior </a> </h3>
 
     <p>
       In this case,&nbsp;$p(z) = \mathcal{N}(0, I)$, $q$ (the encoder) will be parametrized by
@@ -169,8 +159,7 @@
     </p>
 
     <p>
-      Skipping the rather tedious
-      <a href="https://arxiv.org/pdf/1907.08956.pdf">derivation</a> here, but the above simplifies
+      Skipping the long derivation <a id="b2" href="#2">[2]</a> here, but the above simplifies
       to
     </p>
 
@@ -236,13 +225,12 @@
       well. If the data is say, normalized images, we can use binary cross-entropy loss instead.
     </p>
 
-    <br />
-
-    <h3> Implementation </h3>
+    <h3> <a id="implentation" href="#implementation" class="heading"> Implementation </a></h3>
 
     <p>
       Colab notebook
-      <a href="https://colab.research.google.com/drive/1WJWfc6KZ_SY9fgsChWi_JUYHEMAuH-NN?usp=sharing">here</a>.
+      <a
+        href="https://colab.research.google.com/drive/1WJWfc6KZ_SY9fgsChWi_JUYHEMAuH-NN?usp=sharing">here</a>.
       We'll use MNIST. A simple MLP for the encoder and decoder (up convolution) suffices. A
       slight modification we do is that the encoder outputs the log variance instead of the
       variance itself. This is because we want the variance to be always positive and
@@ -275,9 +263,9 @@
     )</code></pre>
 
     <p>
-      This has around 440k parameters. We've used <span class="inline-code">ELU</span> because
-      <span class="inline-code">ReLU</span> can cause dead neurons. Since we're using
-      <span class="inline-code">Sigmoid</span> in the output layer, we'll use binary cross-entropy
+      This has around 440k parameters. We've used <code>ELU</code> because
+      <code>ReLU</code> can cause dead neurons. Since we're using
+      <code>Sigmoid</code> in the output layer, we'll use binary cross-entropy
       loss as the reconstruction loss instead of the MSE loss we derived above. We define the
       forward pass, where we use the repametrization trick.
     </p>
@@ -340,17 +328,28 @@ def train(model, batch_size, lr, epochs):
       bar.set_postfix({'loss': f'{loss.item():.6f}'})</code></pre>
 
     <p>
-      We chose a <span class="inline-code">zdim</span> of 2 so that we can visualize the
+      We chose a <code>zdim</code> of 2 so that we can visualize the
       latent space easily because every decoder output corresponds to a point in $\mathbb{R}^2$.
       Visualizing decoder output for latent vectors in $[-2, 2]^2$ gives us this:
     </p>
 
-    <div class="image-container">
-      <div class="image">
-        <img src="../images/vae_mnist.png" alt="VAE latent space"
-          style="width: 768px; height: auto;">
-      </div>
+    <div align="center">
+      <img src="../images/mnist.png" alt="VAE latent space" style="max-width: 100%; height: auto;">
     </div>
+
+    <h3> <a id="references" href="#references" class="heading">References</a></h3>
+
+    <ol>
+      <li>
+        <a id="1" href="https://arxiv.org/abs/1312.6114"> Auto-Encoding Variational Bayes </a>
+        <a href="#b1"> ↩ </a>
+      </li>
+      <li>
+        <a id="2" href="https://arxiv.org/abs/1907.08956"> Tutorial: Deriving the Standard
+          Variational Autoencoder (VAE) Loss Function </a>
+        <a href="#b2"> ↩ </a>
+      </li>
+    </ol>
   </div>
 
 </body>

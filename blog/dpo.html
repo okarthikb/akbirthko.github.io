@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <!-- meta -->
+  <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport" />
+  <link href="../style.css" rel="stylesheet" type="text/css" />
+
+  <!-- mathjax -->
+  <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [
+          ['$', '$']
+        ],
+        displayMath: [
+          ['$$', '$$']
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+        packages: ['base', 'ams']
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    });
+  </script>
+
+  <!-- code highlight -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css"
+    rel="stylesheet" />
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+  <script> hljs.highlightAll(); </script>
+
+  <title> DPO </title>
+
+</head>
+
+<body>
+  <div class="container">
+    <a id="back" href="../index.html">←</a>
+
+    <h2 class="title"> Direct Preference Optimization (notes) </h2>
+
+    <h3><a id="Bradley-Terry-model" href="#Bradley-Terry-model" class="heading">Bradley-Terry
+        model</a></h3>
+
+    <p>
+      Suppose a bunch of people have various preferences for something, say, person A rates a cookie
+      5/10, person B rates it 7/10, and so on. Or suppose that we have a bunch of players in a game
+      and each gained a particular score. What's the probability that a particular will be rated
+      higher than another by two people? Or what's the probability that one player will win against
+      another? We can model this is as follows
+    </p>
+
+    <p class="math">
+      $$p(y_1 \succ y_2) = \frac{e^{\beta_1}}{e^{\beta_1} + e^{\beta_2}}$$
+    </p>
+
+    <p>
+      where $\beta_1$ and $\beta_2$ are the scores assigned to a particular thing by two score
+      assigners. In the cookie case, we have $p(A \succ B)$, i.e., the probability that the cookie
+      will be preferred by A over B, and $\beta_1$ and $\beta_2$ are the scores assigned by A and B
+      respectively. The denominator normalizes, i.e., ensures that the probabilities sum to 1.
+    </p>
+
+    <h3> <a id="rlhf" href="#rlhf" class="heading"> RLHF objective </a></h3>
+
+    <p>
+      We let LLMs generate completions $y_1$ and $y_2$ for a prompt $x$ and human annotators rank
+      the completions, i.e., they state their preferences for the completions. Let's denote the
+      ranking mechanism used by the annotators as $r^*(x, y_i)$ where $i \in \{1, 2\}$ and $r^*$ is
+      the metric by which the annotators assign scores to a completion $y_i$ for a prompt $x$. Then
+      as per the BT model, we have
+    </p>
+
+    <p class="math">
+      \begin{align*}
+      p(y_i \succ y_j) &= \frac{e^{r^*(x,\,y_i)}}{e^{r^*(x,\,y_i)} + e^{r^*(x,\,y_j)}} \\
+      &= \frac{1}{1 + e^{(r^*(x,\,y_j) - r^*(x,\,y_i))}} \tag{1}
+      \end{align*}
+    </p>
+
+    <p>
+      where we have divide the numerator and denominator by $r^*(x, y_i)$. $r^*$ is what we first
+      aim to learn in classic RLHF <a id="b1" href="#1"> [1] </a>, and we do this by training a
+      reward model $r_{\phi}$ parametrized by $\phi$. We then use this reward model to optimize the
+      LLM using an off the shelf online RL algorithm, such as PPO. The objective for the RL phase is
+    </p>
+
+    <p class="math">
+      $$\max_{\pi_{\theta}}\,\mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[r_{\phi}(x,
+      y)\right] - \beta D_{KL}(\pi_{\theta}(y\,|\,x)\,||\,\pi_{\text{ref}}(y\,|\,x)) \tag{2}$$
+    </p>
+
+    <p>
+      where the second term is the KL divergence term that tries to prevent our model $\pi_{\theta}$
+      from deviating too much from the reference pre-trained model $\pi_{\text{ref}}$ and $\beta$ is
+      the strength of the penalty. Now, RLHF is expensive because it's a two-step process: first
+      training a reward model, then generating trajectories using the model to be trained. Using a
+      reward <i>model</i> instead of the true reward also feels janky. The reward model is not
+      perfect, and the LM has to learn to adapt to the imperfect reward model - you're compounding
+      errors.
+    </p>
+
+    <p>
+      Is there a way to frame the objective such that it only depends on the output of the policy
+      model $\pi_{\theta}$ and the reference model $\pi_{\text{ref}}$ and not the learned reward
+      model $r_{\phi}$, effectively eliminating the reward model training step? Enter DPO <a id="b2"
+        href="#2">[2]</a>.
+    </p>
+
+    <h3><a id="reframing" href="#reframing" class="heading">Reframing the RLHF objective</a></h3>
+
+    <p>
+      We can rewrite the reward objective in $(2)$ like so
+    </p>
+
+    <p class="math">
+      \begin{align*}
+      & \max_{\pi_{\theta}}
+      \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[r(x, y)\right] - \beta
+      D_{KL}(\pi_{\theta}(y\,|\,x)\,||\,\pi_{\text{ref}}(y\,|\,x)) \\
+      &= \max_{\pi_{\theta}}
+      \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[r(x, y) - \beta
+      \log\frac{\pi_{\theta}(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}\right] \\
+      &= \min_{\pi_{\theta}}
+      \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\beta
+      \log\frac{\pi_{\theta}(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)} - r(x, y)\right] \\
+      &= \min_{\pi_{\theta}}
+      \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\log\frac{\pi_{\theta}(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}
+      - \frac{1}{\beta}r(x, y)\right] \\
+      &= \min_{\pi_{\theta}}
+      \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\log\frac{\pi_{\theta}(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}
+      - \log\exp\left(\frac{1}{\beta}r(x, y)\right)\right] \\
+      &= \min_{\pi_{\theta}}
+      \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\log\frac{\pi_{\theta}(y\,|\,x)}{\frac{1}{Z(x)}\pi_{\text{ref}}(y\,|\,x)\exp\left(\frac{1}{\beta}r(x,
+      y)\right)} - \log Z(x)\right]
+      \end{align*}
+    </p>
+
+    <p>
+      where
+    </p>
+
+    <p class="math">
+      $$Z(x) = \sum_y \pi_{\text{ref}}(y\,|\,x)\exp\left(\frac{1}{\beta}r(x, y)\right)$$
+    </p>
+
+    <p>
+      and is the normalizing constant. We can see that the optimally trained model $\pi_{\theta}^*$
+      is given by
+    </p>
+
+    <p class="math">
+      $$\pi_{\theta}^*(y\,|\,x) =
+      \frac{1}{Z(x)}\pi_{\text{ref}}(y\,|\,x)\exp\left(\frac{1}{\beta}r(x, y)\right) \tag{3}$$
+    </p>
+
+    <p>
+      because this minimizes the KL divergence where $\pi_{\text{ref}}$ is our reference model
+      (i.e., the pre-trained model) and $r$ is the reward metric denoting the human annotation
+      process. We need to get rid of $r$. If $\pi^*_{\theta}$ is the optimal policy model, then the
+      ground truth reward $r^*$ is given by
+    </p>
+
+    <p class="math">
+      $$r^*(x, y) = \beta \log\frac{\pi_{\theta}^*(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)} + \beta \log
+      Z(x) \tag{4}$$
+    </p>
+
+    <p>
+      which you can get with a bit of algebra on $(3)$. What this is saying is this: suppose that we
+      have an RL tuned model $\pi_{\theta}^*$ that perfectly satisfies the human annotators'
+      preference function $r^*$ ($r^*$ is basically the heuristic or underlying reward model that
+      represents the human annotators and this is what we learn in classic RLHF with a reward model
+      $r_{\phi}$). Then $r^*$ is given by $(4)$. This is the score given for a completion $y$ given
+      a prompt $x$. We can substitute this score in the Bradley-Terry preference model to get the
+      probability that completion $y_1$ is preffered over completion $y_2$ given prompt $x$
+    </p>
+
+    <p class="math">
+      \begin{align*}
+      p^*(y_1 \succ y_2\,|\,x) &= \frac{1}{1 +
+      \exp\left(\beta\log\frac{\pi_{\theta}^*(y_2\,|\,x)}{\pi_{\text{ref}}(y_2\,|\,x)} -
+      \beta\log\frac{\pi_{\theta}^*(y_1\,|\,x)}{\pi_{\text{ref}}(y_1\,|\,x)}\right)} \\
+      &= \sigma\left(\beta\log\frac{\pi_{\theta}^*(y_1\,|\,x)}{\pi_{\text{ref}}(y_1\,|\,x)} -
+      \beta\log\frac{\pi_{\theta}^*(y_2\,|\,x)}{\pi_{\text{ref}}(y_2\,|\,x)}\right) \tag{5}
+      \end{align*}
+    </p>
+
+    <p>
+      where $\sigma$ is the sigmoid function. It's conventient that the $Z(x)$s cancel out, because
+      it depends on $r(x, y)$ and we're trying to get rid of it from the objective. If $y_w$ denotes
+      the favorable completion and $y_l$ denotes the completion that sucks (as rated by the human
+      annotator), substituting $y_w$ and $y_l$ for $y_1$ and $y_2$ in $(5)$ gives
+    </p>
+
+    <p class="math">
+      \begin{align*}
+      p^*(y_w \succ y_l\,|\,x) =
+      \sigma\left(\beta\log\frac{\pi_{\theta}^*(y_w\,|\,x)}{\pi_{\text{ref}}(y_w\,|\,x)} -
+      \beta\log\frac{\pi_{\theta}^*(y_l\,|\,x)}{\pi_{\text{ref}}(y_l\,|\,x)}\right) \tag{6}
+      \end{align*}
+    </p>
+
+    <p>
+      and the above probability is maximal for the optimal policy $\pi_{\theta}^*$, i.e., we have
+    </p>
+
+    <p class="math">
+      $$p^*(y_w \succ y_l\,|\,x) \geq p^*(y_l \succ y_w\,|\,x)$$
+    </p>
+
+    <p>
+      Equation $(6)$ is for the optimal model, and our goal then is to maximize
+    </p>
+
+    <p class="math">
+      \begin{align*}
+      p(y_w \succ y_l\,|\,x) =
+      \sigma\left(\beta\log\frac{\pi_{\theta}(y_w\,|\,x)}{\pi_{\text{ref}}(y_w\,|\,x)} -
+      \beta\log\frac{\pi_{\theta}(y_l\,|\,x)}{\pi_{\text{ref}}(y_l\,|\,x)}\right) \tag{6}
+      \end{align*}
+    </p>
+
+    <p>
+      i.e., we maximize the log-likelihood of the preference $y_w \succ y_l$ for a dataset
+      $\mathcal{D}$ with prompts $x$, preffered completions $y_w$, and bad completions $y_l$. Our
+      objective becomes minimizing the <i>negative</i> log-likelihood
+    </p>
+
+    <p class="math">
+      $$\mathcal{L}_{\text{DPO}}(\pi_{\theta}\,;\,\pi_{\text{ref}}) =
+      -\mathbb{E}_{(x,\,y_w,\,y_l)\,\sim\,\mathcal{D}}\left[\log
+      \sigma\left(\beta\log\frac{\pi_{\theta}(y_w\,|\,x)}{\pi_{\text{ref}}(y_w\,|\,x)} -
+      \beta\log\frac{\pi_{\theta}(y_l\,|\,x)}{\pi_{\text{ref}}(y_l\,|\,x)}\right)\right]$$
+    </p>
+
+    <p>
+      and as desired, we have removed the reward model out of the picture. The important thing to
+      note is that this is not a surrogate objective but is equivalent to the vanilla RLHF
+      objective. We're converting online learning (letting the model generate trajectories during
+      training) to offline learning (using a dataset of trajectories, i.e., using the logprobs of
+      prefferred and rejected completions).
+    </p>
+
+    <h3> <a href="#pseudocode" id="pseudocode" class="heading"> Pseudocode </a> </h3>
+
+    <p>
+      To compute the loss using PyTorch as per the paper <a href="#2"> [2] </a> we do
+    </p>
+
+    <pre class="language-python"><code>import torch.nn.functional as F
+
+
+def dpo_loss(pi_logps, ref_logps, yw_idxs, yl_idxs, beta):
+  """
+  pi_logps: policy logprobs, shape (B,)
+  ref_logps: reference model logprobs, shape (B,)
+  yw_idxs: preferred completion indices in [0, B-1], shape (T,)
+  yl_idxs: dispreferred completion indices in [0, B-1], shape (T,)
+  beta: temperature controlling strength of KL penalty
+  Each pair of (yw_idxs[i], yl_idxs[i]) represents the indices of a single preference pair.
+  """
+
+  pi_yw_logps,  pi_yl_logps =  pi_logps[yw_idxs],  pi_logps[yl_idxs]
+  ref_yw_logps, ref_yl_logps = ref_logps[yw_idxs], ref_logps[yl_idxs]
+  pi_logratios  = pi_yw_logps - pi_yl_logps
+  ref_logratios = ref_yw_logps - ref_yl_logps
+  losses = -F.logsigmoid(beta * (pi_logratios - ref_logratios))
+  rewards = beta * (pi_logps - ref_logps).detach()
+  return losses, rewards</code></pre>
+
+    <p>
+      Check out the reference implementation <a
+        href="https://github.com/eric-mitchell/direct-preference-optimization/blob/main/trainers.py#L80">here</a>
+      for more deets (such as how <code>pi_logps</code> and <code>ref_logps</code> are computed).
+    </p>
+
+    <h3> <a id="refereces" href="references" class="heading"> References </a> </h3>
+
+    <ol>
+      <li>
+        <a id="1" href="https://arxiv.org/abs/1706.03741"> Deep reinforcement learning from human
+          preferences </a>
+        <a href="#b1"> ↩ </a>
+      </li>
+      <li>
+        <a id="2" href="https://arxiv.org/abs/2305.18290"> Direct Preference Optimization: Your
+          Language Model is Secretly a Reward Model </a>
+        <a href="#b2"> ↩ </a>
+      </li>
+    </ol>
+  </div>
+</body>
+
+</html>
