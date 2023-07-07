@@ -125,7 +125,7 @@
       D_{KL}(\pi_{\theta}(y\,|\,x)\,||\,\pi_{\text{ref}}(y\,|\,x)) \\
       &= \max_{\pi_{\theta}}
       \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[r(x, y) - \beta
-      \log\frac{\pi_{\theta}(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}\right] \\
+      \log\frac{\pi_{\theta}(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)}\right]\\
       &= \min_{\pi_{\theta}}
       \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\beta
       \log\frac{\pi_{\theta}(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)} - r(x, y)\right] \\
@@ -137,12 +137,12 @@
       - \log\exp\left(\frac{1}{\beta}r(x, y)\right)\right] \\
       &= \min_{\pi_{\theta}}
       \mathbb{E}_{x\,\sim\,\mathcal{D},\,y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\log\frac{\pi_{\theta}(y\,|\,x)}{\frac{1}{Z(x)}\pi_{\text{ref}}(y\,|\,x)\exp\left(\frac{1}{\beta}r(x,
-      y)\right)} - \log Z(x)\right]
+      y)\right)} - \log Z(x)\right] \tag{3}
       \end{align*}
     </p>
 
     <p>
-      where
+      where in the second step we have moved $D_{KL}$ inside the expectation because it is the expected log-likelihood and
     </p>
 
     <p class="math">
@@ -150,33 +150,38 @@
     </p>
 
     <p>
-      and is the partition function. We can see that the optimally trained model $\pi_{\theta}^*$
+      is the partition function (which we've newly introduced). The $\log Z(x)$ subtraction inside the expectation is to maintain the equality. We can show that the optimally trained model $\pi_{\theta}^*$
       is given by
     </p>
 
     <p class="math">
       $$\pi_{\theta}^*(y\,|\,x) =
-      \frac{1}{Z(x)}\pi_{\text{ref}}(y\,|\,x)\exp\left(\frac{1}{\beta}r(x, y)\right) \tag{3}$$
+      \frac{1}{Z(x)}\pi_{\text{ref}}(y\,|\,x)\exp\left(\frac{1}{\beta}r(x, y)\right) \tag{4}$$
     </p>
 
     <p>
-      because this minimizes the KL divergence where $\pi_{\text{ref}}$ is our reference model
-      (i.e., the pre-trained model) and $r$ is the reward metric denoting the human annotation
-      process. We need to get rid of $r$. If $\pi^*_{\theta}$ is the optimal policy model, then the
-      ground truth reward $r^*$ is given by
+      From the definition of $Z(x)$, one can see that $\sum_y \pi_{\theta}^*(y\,|\,z) = 1$, and since $\pi_{\theta}^*(y\,|\,x) \geq 0$, it is a valid probability distribution. We can bring the expectation over $y$ inside in $(3)$ and get the objective
+    </p>
+
+    <p class="math">
+      $$\min_{\pi_{\theta}} \mathbb{E}_{x\,\sim\,\mathcal{D}}\left[\mathbb{E}_{y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\frac{\log \pi_{\theta}(y\,|\,x)}{\log \pi_{\theta}^*(y\,|\,x)}\right] - \log Z(x)\right]$$
+    </p>
+
+    <p>
+      The KL divergence is minimized when $\pi_{\theta}(y\,|\,x) = \pi_{\theta}^*(y\,|\,x)$, which shows that $\pi_{\theta}^*$ is the optimal policy model. Now, we need to get rid of $r$. If $\pi^*_{\theta}$ is the optimal policy model, then the ground truth reward $r^*$ is given by
     </p>
 
     <p class="math">
       $$r^*(x, y) = \beta \log\frac{\pi_{\theta}^*(y\,|\,x)}{\pi_{\text{ref}}(y\,|\,x)} + \beta \log
-      Z(x) \tag{4}$$
+      Z(x) \tag{5}$$
     </p>
 
     <p>
-      which you can get with a bit of algebra on $(3)$. What this is saying is this: suppose that we
+      which you can get by solving for $r^*$ in $(4)$. What this is saying is this: suppose that we
       have an RL tuned model $\pi_{\theta}^*$ that perfectly satisfies the human annotators'
       preference function $r^*$ ($r^*$ is basically the heuristic or underlying reward model that
       represents the human annotators and this is what we learn in classic RLHF with a reward model
-      $r_{\phi}$). Then $r^*$ is given by $(4)$. This is the score given for a completion $y$ given
+      $r_{\phi}$). Then $r^*$ is given by $(5)$. This is the score given for a completion $y$ given
       a prompt $x$. We can substitute this score in the Bradley-Terry preference model in $(1)$ to get the
       probability that completion $y_1$ is preffered over completion $y_2$ given prompt $x$
     </p>
@@ -222,7 +227,7 @@
       \begin{align*}
       p(y_w \succ y_l\,|\,x) =
       \sigma\left(\beta\log\frac{\pi_{\theta}(y_w\,|\,x)}{\pi_{\text{ref}}(y_w\,|\,x)} -
-      \beta\log\frac{\pi_{\theta}(y_l\,|\,x)}{\pi_{\text{ref}}(y_l\,|\,x)}\right) \tag{6}
+      \beta\log\frac{\pi_{\theta}(y_l\,|\,x)}{\pi_{\text{ref}}(y_l\,|\,x)}\right)
       \end{align*}
     </p>
 
