@@ -62,7 +62,7 @@
     </p>
 
     <p>
-      where $\beta_1$ and $\beta_2$ are the scores assigned to a particular thing by two score
+      where $\beta_1$ and $\beta_2$ are the scores assigned to a $y_1$ and $y_2$ respectively by two score
       assigners. In the cookie case, we have $p(A \succ B)$, i.e., the probability that the cookie
       will be preferred by A over B, and $\beta_1$ and $\beta_2$ are the scores assigned by A and B
       respectively. The denominator normalizes, i.e., ensures that the probabilities sum to 1.
@@ -73,9 +73,7 @@
     <p>
       We let LLMs generate completions $y_1$ and $y_2$ for a prompt $x$ and human annotators rank
       the completions, i.e., they state their preferences for the completions. Let's denote the
-      ranking mechanism used by the annotators as $r^*(x, y_i)$ where $i \in \{1, 2\}$ and $r^*$ is
-      the metric by which the annotators assign scores to a completion $y_i$ for a prompt $x$. Then
-      as per the BT model, we have
+      ranking mechanism used by the annotators as $r^*(x, y)$ which is the score assigned by them to a completion $y$ for a prompt $x$. Then as per the BT model, we have
     </p>
 
     <p class="math">
@@ -86,10 +84,10 @@
     </p>
 
     <p>
-      where we have divide the numerator and denominator by $r^*(x, y_i)$. $r^*$ is what we first
+      where we have divided the numerator and denominator by $r^*(x, y_i)$. $r^*$ is what we first
       aim to learn in classic RLHF <a id="b1" href="#1"> [1] </a>, and we do this by training a
       reward model $r_{\phi}$ parametrized by $\phi$. We then use this reward model to optimize the
-      LLM using an off the shelf online RL algorithm, such as PPO. The objective for the RL phase is
+      LLM using an off the shelf online RL algorithm (like PPO). The objective for the RL phase is
     </p>
 
     <p class="math">
@@ -179,7 +177,7 @@
       preference function $r^*$ ($r^*$ is basically the heuristic or underlying reward model that
       represents the human annotators and this is what we learn in classic RLHF with a reward model
       $r_{\phi}$). Then $r^*$ is given by $(4)$. This is the score given for a completion $y$ given
-      a prompt $x$. We can substitute this score in the Bradley-Terry preference model to get the
+      a prompt $x$. We can substitute this score in the Bradley-Terry preference model in $(1)$ to get the
       probability that completion $y_1$ is preffered over completion $y_2$ given prompt $x$
     </p>
 
@@ -209,7 +207,7 @@
     </p>
 
     <p>
-      and the above probability is maximal for the optimal policy $\pi_{\theta}^*$, i.e., we have
+      and the above probability is maximum for the optimal policy $\pi_{\theta}^*$, i.e., we have
     </p>
 
     <p class="math">
