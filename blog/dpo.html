@@ -164,7 +164,10 @@
     </p>
 
     <p class="math">
-      $$\min_{\pi_{\theta}} \mathbb{E}_{x\,\sim\,\mathcal{D}}\left[\mathbb{E}_{y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\frac{\log \pi_{\theta}(y\,|\,x)}{\log \pi_{\theta}^*(y\,|\,x)}\right] - \log Z(x)\right]$$
+      \begin{align*}
+      &\min_{\pi_{\theta}} \mathbb{E}_{x\,\sim\,\mathcal{D}}\left[\mathbb{E}_{y\,\sim\,\pi_{\theta}(y\,|\,x)}\left[\log \frac{\pi_{\theta}(y\,|\,x)}{\pi_{\theta}^*(y\,|\,x)}\right] - \log Z(x)\right] \\
+      &= \min_{\pi_{\theta}} \mathbb{E}_{x\,\sim\,\mathcal{D}}\left[D_{KL}(\pi_{\theta}(y\,|\,x)\,||\,\pi_{\theta}^*(y\,|\,x)) - \log Z(x)\right]
+      \end{align*}
     </p>
 
     <p>
