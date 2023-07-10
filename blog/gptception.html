@@ -703,11 +703,11 @@ loss = loss_fn(output.view(-1, vocab_size), target_batch.view(-1))
 output.shape, loss.item()  # Expected output shape: (batch_size, seq_len, vocab_size)</code></pre>
       <pre
         class="language-plaintext result"><code>Cell In[4], line 39, in MultiHeadAttention.forward(self, x)
-    36 v = rearrange(v, 'b l (h d) -> b h l d', h=self.num_heads)
-    38 # Apply scaled dot product attention
+     36 v = rearrange(v, 'b l (h d) -> b h l d', h=self.num_heads)
+     38 # Apply scaled dot product attention
 ---> 39 attn = scaled_dot_product_attention(q, k, v)
-    41 # Concatenate heads and apply final linear layer
-    42 attn = rearrange(attn, 'b h l d -> b l (h d)')
+     41 # Concatenate heads and apply final linear layer
+     42 attn = rearrange(attn, 'b h l d -> b l (h d)')
 
 Cell In[4], line 4, in scaled_dot_product_attention(q, k, v)
       2 def scaled_dot_product_attention(q, k, v):
@@ -786,7 +786,7 @@ output.shape, loss.item()  # Expected output shape: (batch_size, seq_len, vocab_
 File ~/.local/lib/python3.8/site-packages/torch/nn/functional.py:1680, in softmax(input, dim, _stacklevel, dtype)
     1678     dim = _get_softmax_dim("softmax", input.dim(), _stacklevel)
     1679 if dtype is None:
--> 1680     ret = input.softmax(dim)
+ -> 1680     ret = input.softmax(dim)
     1681 else:
     1682     ret = input.softmax(dim, dtype=dtype)
 
