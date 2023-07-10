@@ -89,7 +89,21 @@ code {
 }
 
 pre > code {
+  background: #f7f7f7 !important;
+}
+
+.result::before {
+  content: 'RESULT';
+  padding: 0.5em;
   background: #f7f7f7 !important; 
+  font-family: 'Fira Code', monospace;
+}
+
+.stdout::before {
+  content: 'STDOUT/STDERR';
+  padding: 0.5em;
+  background: #f7f7f7 !important; 
+  font-family: 'Fira Code', monospace;
 }
 
 @media screen and (max-width: 512px) {
