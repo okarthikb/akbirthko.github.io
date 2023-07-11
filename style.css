@@ -24,7 +24,7 @@ body {
 }
 
 .container {
-  max-width: 748px;
+  max-width: 768px;
   margin: 2em auto 4em auto;
   padding: 0 0.75em;
 }
@@ -106,8 +106,14 @@ pre > code {
   font-family: 'Fira Code', monospace;
 }
 
-@media screen and (max-width: 512px) {
+@media screen and (max-width: 640px) {
   body {
     font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 512px) {
+  body {
+    font-size: 12px;
   }
 }
