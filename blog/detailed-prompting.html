@@ -481,19 +481,50 @@ x = c | x = 0 | 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 0 7 9 3 4 6 5 4 6 2 4 3 
     </p>
 
     <p>
-      Putting the index at the front like <code>4:</code>, <code>3:</code>, etc., helps it retrieve the correct digit pair. Based on the sum of the pair, it "sets" the carry bit <code>c</code> and result digit <code>d</code>, like it's Python. The result digit <code>d</code> is then concatenated with the answer so far computed and we make the concat operation explicit as well. At the end of each line we have <code>end? f/t</code> to signify whether the procedure has ended and it needs to compute the final carry bit. It computes the final carry bit and concats it to the answer and we have our sum.
+      Putting the index at the front like <code>4:</code>, <code>3:</code>, etc., helps it retrieve the correct digit pair. Based on the sum of the pair, it "sets" the carry bit <code>c</code> and result digit <code>d</code>, like it's Python. The result digit <code>d</code> is then concatenated with the answer so far computed and we make the concat operation explicit as well. At the end of each line we have <code>end? f/t</code> to signify whether the procedure has ended and it needs to compute the final carry bit. It computes the final carry bit and concats it to the answer and we have our sum. Given two strings like '420' and '69', the Python implementation of the procedure we make GPT-4 use is as follows
     </p>
 
     <p>
-      GPT-4 here is doing some weird combination of natural language processing and Python-like step by step interpretation. It's a bit like what we see with <a href="https://www.engraved.blog/building-a-virtual-machine-inside/">emulating a virtual machine</a> inside ChatGPT (which now seems rather quiant in retrospect). Language models really are unlike any kind of software we've previously built. While some AI researchers claim language models are bogus, others turn them into Turing machines <a href="#3" id="b3">[3]</a>. While some people <a href="https://yoshuabengio.org/2023/05/22/how-rogue-ais-may-arise/">decry</a> that language models will be so capable so as to be existentially dangerous, it's pretty <a href="https://twitter.com/akbirthko/status/1680766177448980480?s=20">easy to show</a> how weakly self-aware and <a href="https://sohl-dickstein.github.io/2023/03/09/coherence.html">incoherent</a> their goals are. I think a good lesson is: <i>we must be very careful in using analogies to reason about large language models</i>.
+      <pre class="language-python"><code>def llm_add(a, b):
+  if len(a) < len(b):
+    a = '0' * abs(len(a) - len(b)) + a
+  else:
+    b = '0' * abs(len(a) - len(b)) + b
+  x, result = '', ''
+  template = '{}: {} + {} + c = {} + {} = {} -> c = {} , d = {} -> x = d | x = {} | {} = {} -> end?'
+  c = 0
+  for i in range(len(a) - 1, -1, -1):
+    s = int(a[i]) + int(b[i]) + c
+    d, c_, s_ = s % 10, s // 10, s + c
+    x_ = f'{d}' if x == '' else f'{d} ' + x
+    fin = (' t' if i == 0 else ' f') + '\n' 
+    result += template.format(i + 1, a[i], b[i], s, c, s_, c_, d, d, x, x_) + fin
+    x, c = x_, c_
+  result += f"\nx = c | x = {c} | {x} = {str(c) + ' ' + x}"
+  return result
+
+
+print(llm_add('420', '69'))</code></pre>
+    </p>
+
+    <p>
+      and we can verify if GPT-4 used the correct procedure with a string match. One can view this through the lens of probabilistic programming <a href="#4" id="b4">[4]</a>. Different sections of the context are traces of different subroutines, each spawned by the stochastic generation of specific tokens. The idea seems especially enticing considering ChatGPT Plugins and Code Interpreter, where the model literally calls APIs and uses an interpreter.
+    </p>
+
+    <div align="center">
+      <img src="../images/cascades.png" alt="LM Cascades" style="height: auto; max-width: 100%; width: 640px;"/>
+    </div>
+
+    <p> 
+      GPT-4 does some weird combination of natural language processing and Python-like step by step interpretation here. It's a bit like we're <a href="https://www.engraved.blog/building-a-virtual-machine-inside/">emulating a virtual machine</a> inside ChatGPT, which now seems rather quiant in retrospect. Language models really are unlike any kind of software we've previously built. While some AI researchers claim language models are bogus, others turn them into Turing machines <a href="#3" id="b3">[3]</a>. While some people <a href="https://yoshuabengio.org/2023/05/22/how-rogue-ais-may-arise/">decry</a> that language models will be so capable so as to be existentially dangerous, it's pretty <a href="https://twitter.com/akbirthko/status/1680766177448980480?s=20">easy to show</a> how weakly self-aware and <a href="https://sohl-dickstein.github.io/2023/03/09/coherence.html">incoherent</a> their goals are. I think a good lesson is: <i>we must be very careful in using analogies to reason about large language models</i>.
     </p>
 
     <p> 
-      Analogies are not all bad however. The most useful analogy I've seen so far is Janus's simulators <a href="#4" id="b4">[4]</a>: large language models are world simulators in <i>text space</i>. They are not calculators, they are not humans, but they can simulate both (to some extent). A clearer and more formal treatment of this viewpoint can be found in "Language Models as Agent Models" <a href="#5" id="b5">[5]</a>, and it's my preferred way of thinking about language models (especially RLHF-ed ones). You are behavior-cloning human activity on the internet; offline RL where the action space is the finite vocabulary of tokens.
+      Analogies are not all bad however. The most useful analogy I've seen so far is Janus's simulators <a href="#5" id="b5">[5]</a>: large language models are world simulators in <i>text space</i>. They are not calculators, they are not humans, but they can simulate both (to some extent). A clearer and more formal treatment of this viewpoint can be found in "Language Models as Agent Models" <a href="#6" id="b6">[6]</a>, and it's my preferred way of thinking about language models (especially RLHF-ed ones). You are behavior-cloning human activity on the internet; offline RL where the action space is the finite vocabulary of tokens.
     </p>
 
     <p>
-      The LLM = simulator perspective comes with a host of positive and negative implications for language models which I'll go over in another post. For now, ciao.
+      The perspective comes with a host of positive and negative implications for language models which I'll go over in another post. For now, you'll know what to do if your calculator fails (you use a 1.76 trillion parameter mixture of experts model).
     </p>
 
     <h3><a href="#references" id="references" class="heading">References</a></h3>
@@ -512,12 +543,16 @@ x = c | x = 0 | 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 0 7 9 3 4 6 5 4 6 2 4 3 
         <a href="#b3">↩</a>
       </li>
       <li>
-        <a href="https://www.lesswrong.com/posts/vJFdjigzmcXMhNTsx/simulators" id="4">Simulators</a>
+        <a href="https://model-cascades.github.io" id="4">Language Model Cascades</a>
         <a href="#b4">↩</a>
       </li>
       <li>
-        <a href="https://arxiv.org/abs/2212.01681" id="5">Language Models as Agent Models</a>
+        <a href="https://www.lesswrong.com/posts/vJFdjigzmcXMhNTsx/simulators" id="5">Simulators</a>
         <a href="#b5">↩</a>
+      </li>
+      <li>
+        <a href="https://arxiv.org/abs/2212.01681" id="6">Language Models as Agent Models</a>
+        <a href="#b6">↩</a>
       </li>
     </ol>
   </div>
