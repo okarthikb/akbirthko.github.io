@@ -339,7 +339,7 @@ x = c | x = 0 | 7 9 3 4 6 5 4 6 2 4 3 7 1 4 5 7 7 1 4 = 0 7 9 3 4 6 5 4 6 2 4 3 
     <h3><a href="#tokenization" id="tokenization" class="heading">Tokenization</a></h3>
 
     <p>
-      We first look at the main reason why GPT-4 fails at zero-shot addition addition: the text input is tokenized using byte-pair encoding (BPE) <a href="#2" id="b2">[2]</a>, a compression algorithm introduced by Philip Gage in 1994. The text is split into subwords and there's a finite set - the vocabulary - of subwords that it is split into. Each subword - or token - has an id, and the text which is converted to a list of ids becomes the input to the GPT model. The way BPE works is by first doing a whitespace split on the BPE train corpus (some corpus with which you train the tokenizer). Then you set the vocab size you want and the tokenizer will then greedily merge the most frequent byte pairs until the vocab size is reached. This is now the vocabulary of the model.
+      We first look at the main reason why GPT-4 fails at zero-shot addition: the text input is tokenized using byte-pair encoding (BPE) <a href="#2" id="b2">[2]</a>, a compression algorithm introduced by Philip Gage in 1994. The text is split into subwords and there's a finite set - the vocabulary - of subwords that it is split into. Each subword - or token - has an id, and the text which is converted to a list of ids becomes the input to the GPT model. The way BPE works is by first doing a whitespace split on the BPE train corpus (some corpus with which you train the tokenizer). Then you set the vocab size you want and the tokenizer will then greedily merge the most frequent byte pairs until the vocab size is reached. This is now the vocabulary of the model.
     </p>
 
     <p>
