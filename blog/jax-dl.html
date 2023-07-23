@@ -111,7 +111,6 @@ class GPTLayer(Module):
     self.add(LayerNorm(key5, d, name='mhaln'))
     self.add(LayerNorm(key6, d, name='ffnln'))
 
-
   def forward(self, param, x, mask):
     q, k, v = rearrange(self.wx(param, self.mhaln(param, x)), 'l (o nh dh) -> o nh l dh', o=3, nh=self.nh)
     heads = nn.softmax(jnp.einsum('hic, hjc -> hij', q, k) / sqrt(self.d) + mask, -1) @ v
