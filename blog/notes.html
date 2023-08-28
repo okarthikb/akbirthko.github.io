@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- meta -->
+  <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport" />
+  <link href="../style.css" rel="stylesheet" type="text/css" />
+
+  <!-- mathjax -->
+  <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [
+          ['$', '$'],
+        ],
+        displayMath: [
+          ['$$', '$$'],
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+        packages: ['base', 'ams']
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    });
+  </script>
+
+  <!-- code highlight -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css"
+    rel="stylesheet" />
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+  <script> hljs.highlightAll(); </script>
+
+  <title>Notes</title>
+
+</head>
+
+<body>
+
+  <div class="container">
+    <a id="back" href="../index.html">←</a>
+
+    <h2 class="title"> Schrödinger Equation </h2>
+
+    <p>
+      The Schrödinger equation is defined as 
+    </p>
+
+    <p class="math">
+      $$i\hbar\frac{\partial\mathbf{\Psi}}{\partial t} = -\frac{\hbar}{2m}\frac{\partial^2 \mathbf{\Psi}}{\partial x^2} + V\mathbf{\Psi}$$
+    </p>
+  </div>
+
+</body>
+</html>
