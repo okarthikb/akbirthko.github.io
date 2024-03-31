@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <!-- meta -->
+    <meta charset="utf-8" content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link href="../style.css" rel="stylesheet" type="text/css" />
+
+    <!-- mathjax -->
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [
+          ['$', '$']
+        ],
+        displayMath: [
+          ['$$', '$$']
+        ],
+        processEscapes: true,
+        processEnvironments: true,
+        packages: ['base', 'ams']
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    });
+  </script>
+
+    <!-- code highlight -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css"
+        rel="stylesheet" />
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+    <script> hljs.highlightAll(); </script>
+
+    <title> more bitter </title>
+
+</head>
+
+<body>
+    <div class="container">
+        <a id="back" href="../index.html">←</a>
+
+        <h2 class="title"> more bitter? </h2>
+        
+        <p>the scope of the bitter lesson is larger than most ppl believe it to be i think</p>
+        <p>ppl only believe it for one part of the stack, ie, modelling</p>
+        <p>except look at any ai agent repo and it's so many hand coded rules to interface the model with the real world, hooking it w apis and such</p>
+        <p>for eg, think what u need to make an LLM do what the msft engineer did to catch the recent xz utils backdoor</p>
+        <p>the piece of information that gave away the issue was an extra 500ms delay. to make an llm agent do this, you'd hand code the timestamps in the context for every command</p>
+        <p>and hope that the model (Claude Opus could, prolly) might catch the extra time it took to run the command</p>
+        <p>"i notice that the last ssh command took longer to run"</p>
+        <p>no human has an inner monologue like this. they would just silently notice and would start investigating</p>
+        <p>ur processing information like this all the time subconsciously </p>
+        <p>you don't notice it and only notice ur frontal thoughts when solving a hard abstract reasoning problem</p>
+        <p>so llms impress us when they do this too, doing math/cp. so we're surprised by low swe-bench scores</p>
+        <p>this is precisely what moravec's paradox tells us: what is easy for us is hard for machines and vice versa, because we don't realize that a lot of things we do was optimized to the subconscious level by evolution over millennia</p>
+        <p>copy pasta from moravec's paradox wikipedia:</p>
+        <p><b>Moravec's paradox</b> is the observation in <a href="/wiki/Artificial_intelligence" title="Artificial intelligence">artificial intelligence</a> and <a href="/wiki/Robotics" title="Robotics">robotics</a> that, contrary to traditional assumptions, <a href="/wiki/Reasoning" class="mw-redirect" title="Reasoning">reasoning</a> requires very little <a href="/wiki/Computation" title="Computation">computation</a>, but <a href="/wiki/Sensory_processing#Sensorimotor_system" title="Sensory processing">sensorimotor</a> and perception skills require enormous computational resources. The principle was articulated by <a href="/wiki/Hans_Moravec" title="Hans Moravec">Hans Moravec</a>, <a href="/wiki/Rodney_Brooks" title="Rodney Brooks">Rodney Brooks</a>, <a href="/wiki/Marvin_Minsky" title="Marvin Minsky">Marvin Minsky</a> and others in the 1980s. Moravec wrote in 1988, "it is comparatively easy to make computers exhibit adult level performance on intelligence tests or playing checkers, and difficult or impossible to give them the skills of a one-year-old when it comes to perception and mobility".<sup id="cite_ref-FOOTNOTEMoravec198815_1-0" class="reference"><a href="#cite_note-FOOTNOTEMoravec198815-1">[1]</a></sup>
+        </p>
+        <p>Similarly, Minsky emphasized that the most difficult human skills to <a href="/wiki/Reverse_engineer" class="mw-redirect" title="Reverse engineer">reverse engineer</a> are those that are below the level of conscious awareness. "In general, we're least aware of what our minds do best", he wrote, and added "we're more aware of simple processes that don't work well than of complex ones that work flawlessly".<sup id="cite_ref-FOOTNOTEMinsky19862_2-0" class="reference"><a href="#cite_note-FOOTNOTEMinsky19862-2">[2]</a></sup> <a href="/wiki/Steven_Pinker" title="Steven Pinker">Steven Pinker</a> wrote in 1994 that "the main lesson of thirty-five years of AI research is that the hard problems are easy and the easy problems are hard."<sup id="cite_ref-FOOTNOTEPinker2007190_3-0" class="reference"><a href="#cite_note-FOOTNOTEPinker2007190-3">[3]</a></sup>
+        </p>
+    <p>One possible explanation of the paradox, offered by Moravec, is based on <a href="/wiki/Evolution" title="Evolution">evolution</a>. All human skills are implemented biologically, using machinery designed by the process of <a href="/wiki/Natural_selection" title="Natural selection">natural selection</a>. In the course of their evolution, natural selection has tended to preserve design improvements and optimizations. The older a skill is, the more time natural selection has had to improve the design. Abstract thought developed only very recently, and consequently, we should not expect its implementation to be particularly efficient.
+    </p>
+    <p>As Moravec writes:</p>
+    <style data-mw-deduplicate="TemplateStyles:r1211633275">.mw-parser-output .templatequote{overflow:hidden;margin:1em 0;padding:0 32px}.mw-parser-output .templatequote .templatequotecite{line-height:1.5em;text-align:left;padding-left:1.6em;margin-top:0}</style><blockquote class="templatequote"><p>Encoded in the large, highly evolved sensory and motor portions of the human brain is a billion years of experience about the nature of the world and how to survive in it. The deliberate process we call reasoning is, I believe, the thinnest veneer of human thought, effective only because it is supported by this much older and much more powerful, though usually unconscious, sensorimotor knowledge. We are all prodigious olympians in perceptual and motor areas, so good that we make the difficult look easy. Abstract thought, though, is a new trick, perhaps less than 100 thousand years old. We have not yet mastered it. It is not all that intrinsically difficult; it just seems so when we do it.<sup id="cite_ref-FOOTNOTEMoravec198815–16_7-0" class="reference"><a href="#cite_note-FOOTNOTEMoravec198815–16-7">&#91;7&#93;</a></sup></p></blockquote>
+    <p>A compact way to express this argument would be:
+    </p>
+        <ul><li>We should expect the difficulty of reverse-engineering any human skill to be roughly proportional to the amount of time that skill has been evolving in animals.</li>
+        <li>The oldest human skills are largely unconscious and so appear to us to be effortless.</li>
+        <li>Therefore, we should expect skills that appear effortless to be difficult to reverse-engineer, but skills that require effort may not necessarily be difficult to engineer at all.</li></ul>
+        <p>Some examples of skills that have been evolving for millions of years: recognizing a face, moving around in space, judging people's motivations, catching a ball, recognizing a voice, setting appropriate goals, paying attention to things that are interesting; anything to do with perception, attention, visualization, motor skills, social skills and so on.
+        </p>
+        <p>Some examples of skills that have appeared more recently: mathematics, engineering, games, logic and scientific reasoning. These are hard for us because they are not what our bodies and brains were primarily evolved to do. These are skills and techniques that were acquired recently, in historical time, and have had at most a few thousand years to be refined, mostly by cultural evolution.
+        </p>
+    </div>
+</body>
+
+</html>
