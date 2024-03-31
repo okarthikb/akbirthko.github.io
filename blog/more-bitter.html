@@ -51,7 +51,7 @@
         <p>except look at any ai agent repo and it's so many hand coded rules to interface the model with the real world, hooking it w apis and such</p>
         <p>for eg, think what u need to make an LLM do what the msft engineer did to catch the recent xz utils backdoor</p>
         <p>the piece of information that gave away the issue was an extra 500ms delay plus remembering some complaint from weeks past. how long before it becomes common to use a single LLM context for weeks on end? is that even feasible? will smth like ChatGPT memory suffice? i doubt. but we'll see</p>
-        <div align="center"><img src="IMG_0126.png" style="height: auto; max-width: 100%; width: 512px;"/></div>
+        <div align="center"><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Plans to literally &quot;hack the planet&quot; foiled due to 500ms of latency that Andres instinctually investigated.<br><br>The latency was due how the malicious code parsed symbol tables in memory.<a href="https://t.co/WNExkhVbTx">https://t.co/WNExkhVbTx</a> <a href="https://t.co/s79rFsE08e">pic.twitter.com/s79rFsE08e</a></p>&mdash; HaxRob (@haxrob) <a href="https://twitter.com/haxrob/status/1773937085524979870?ref_src=twsrc%5Etfw">March 30, 2024</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></div>
         <p>to make an llm agent do this, you'd hand code the timestamps in the context for every command</p>
         <p>and hope that the model (Claude Opus could, prolly) might catch the extra time it took to run the command</p>
         <p>"i notice that the last ssh command took longer to run"</p>
