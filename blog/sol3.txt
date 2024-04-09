@@ -1,0 +1,601 @@
+A::B is a system with 4 tokens: A#, #A, B# and #B.
+
+An A::B program is a sequence of tokens. Example:
+
+B# A# #B #A B#
+
+To *compute* a program, we must rewrite neighbor tokens, using the rules:
+
+A# #A ... becomes ... nothing
+A# #B ... becomes ... #B A#
+B# #A ... becomes ... #A B#
+B# #B ... becomes ... nothing
+
+In other words, whenever two neighbor tokens have their '#' facing each-other,
+
+they must be rewritten according to the corresponding rule. For example, the
+
+first example shown here is computed as:
+
+B# A# #B #A B# =
+B# #B A# #A B# =
+A# #A B# =
+B#
+
+The steps were:
+
+1. We replaced `A# #B` by `#B A#`.
+2. We replaced `B# #B` by nothing.
+3. We replaced `A# #A` by nothing.
+
+The final result was just `B#`.
+
+Now, here's a formal procedure to follow to do the computation.
+
+Substitution rules:
+
+A# #A => nothing
+A# #B => #A B#
+B# #A => #B A#
+B# #B => nothing
+
+The general rule is:
+
+The pattern
+
+X # # X becomes nothing (same character, hashes consecutive)
+
+The pattern
+
+X # # Y becomes # X Y # (the hashes move outside) 
+
+The problem will be given like so
+
+<problem>#A #B A# #B B# A# #A #B</problem>
+
+and we proceed.
+
+We index the tokens and split the hash as well. Then we write it all together
+
+1: #A → # A
+2: #B → # B
+3: A# → A #
+4: #B → # B
+5: B# → B #
+6: A# → A #
+7: #A → # A
+8: #B → # B
+
+# A # B A # # B B # A # # A # B
+
+1. You start with
+
+t : # A # B A # # B B # A # # A # B
+
+"t" for "tokens"
+
+2. Now, rewrite # A # B A # # B B # A # # A # B, but this time put a < right after the character following two consecutive hashes. After the < mark, just copy the rest of the tokens, you do not have to check if consecutive hashes appear again. So after the first mark, we just stop checking for consecutive hashes in this cycle. So we have
+
+ma : # A # B A # # B < B # A # # A # B
+
+"ma" for "mark after". 
+
+Check if < exists. If yes, continue. If no, t is solution.
+
+3. Rewrite again, but this time put a > right before the character preceding the two consecutive hashes.
+
+mb : # A # B > A # # B < B # A # # A # B
+
+"mb" for "mark before"
+
+4. Write everything after <
+
+a : B # A # # A # B
+
+"a" for "after"
+
+5. Write everything before >
+
+b : # A # B
+
+"b" for "before"
+
+6. Write the characters between > and <
+
+s : A # # B
+
+"s" for "section"
+
+7. Use the general rule discussed previously. If the hashes are between different characters, the characters are put between the hashes. If the hashes are between the same characters, we remove both the characters and the hashes. Here
+
+A != B →
+r : # A B #
+
+"r" for "replace". In the case of the characters being same, say, B # # B, we do
+
+r : _
+
+8. Finally, we concatenate "b", "r", and "a"
+
+b | r | a →
+# A # B | # A B # | B # A # # A # B →
+
+t : # A # B # A B # B # A # # A # B
+
+9. Repeat process from 1, until you generate a mark after sequence without a <
+
+At the end we'll have a sequence of even number of characters. Combine at every second character like so
+
+1: char1
+2: char2 → char1char2
+3: char3
+4: char4 → char3char4
+...
+char n-1: charn-1
+char n: charn → charn-1charn
+
+<solution>char1char2 char3char4 ... charn-1charn</solution>
+
+It's important that you start at position 2.
+
+---
+
+example 1
+
+<problem>B# B# B# #A #B B# #A B#</problem>
+
+1: B# → B #
+2: B# → B #
+3: B# → B #
+4: #A → # A
+5: #B → # B
+6: B# → B #
+7: #A → # A
+8: B# → B #
+
+B # B # B # # A # B B # # A B #  
+
+t : B # B # B # # A # B B # # A B #
+
+1: B 
+2: #
+3: B
+4: #
+5: #
+6: A
+7: #
+8: B
+9: B
+10: #
+11: #
+12: A
+13: B
+14: #
+
+1: B 
+2: #
+3: B → 1: B , 2: # → B # - - - (comment: we start checking the past two chars from position 3)
+4: # → 2: # , 3: B → # B - - -
+5: # → 3: B , 4: # → B # - - -
+6: A -> 4: # , 5: # → # # - - - mark! (comment: here, two consecutive hashes, so, mark!)
+7: #
+8: B
+9: B
+10: #
+11: #
+12: A  (comment: here, this would be mark. but we handle only one mark at a time, in one iteration)
+13: B
+14: #
+
+mark after @ 6:
+
+ma : B # B # B # # A < # B B # # A B #
+
+mark in ma? → yes → continue
+
+mark before @ 6 - 3 = 3:
+
+1: B 
+2: #
+3: > B  (comment: index again, and put mark before; mark after @ 6, mark before @ 3, 6 -  3 = 3)
+4: #
+5: #
+6: A <
+7: #
+8: B
+9: B
+10: #
+11: #
+12: A
+13: B
+14: #
+
+mb : B # B # > B # # A < # B B # # A B #  (comment: now rewrite t with both marks)
+
+b : B # B
+
+a : # B B # # A B #
+
+s : B # # A
+
+B != A →
+r : # B A #
+
+b | r | a →
+B # B | # B A # | # B B # # A B #
+
+t : B # B # B A # # B B # # A B #
+
+...
+
+b | r | a →
+# B A # | _ | A # B #
+
+t : # B A # A # B #
+
+1: #
+2: B
+3: A
+4: #
+5: A
+6: #
+7: B
+8: #
+
+1: #
+2: B
+3: A → 1: # , 2: B → # B - - - (comment: again, we start from position 3)
+4: # → 2: B , 3: A → B A - - -
+5: A → 3: A , 4: # → A # - - - 
+6: # → 4: # , 5: A → # A - - - 
+7: B → 5: A , 6: # → A # - - -
+8: # → 6: # , 7: B → # B - - -
+
+ma : # B A # A # B #
+
+mark in ma? → no → stop
+
+1: #
+2: B → #B  (comment: after stopping, here we start at position 2. DO NOT MISS THIS)
+3: A
+4: # → A#
+5: A
+6: # → A#
+7: B
+8: # → B#
+
+<solution>#B A# A# B#</solution>
+
+---
+
+example 2
+
+<problem>#A #B A# #B</problem>
+
+1: #A → # A
+2: #B → # B
+3: A# → A #
+4: #B → # B
+
+# A # B A # # B
+
+t : # A # B A # # B
+
+1: #
+2: A
+3: #
+4: B
+5: A
+6: #
+7: #
+8: B
+
+1: #
+2: A
+3: # → 1: # , 2: A → # A - - -
+4: B → 2: A , 3: # → A # - - -
+5: A → 3: # , 4: B → # B - - -
+6: # → 4: B , 5: A → B A - - -
+7: # → 5: A , 6: # → A # - - -
+8: B → 6: # , 7: # → # # - - - mark!
+
+mark after @ 8:
+
+ma : # A # B A # # B <
+
+mark in ma? → yes → continue
+
+mark before @ 8 - 3 = 5:
+
+1: #
+2: A
+3: #
+4: B
+5: > A  (comment: mark after @ 8, mark before @ 5, 8 - 5 = 3, as before)
+6: #
+7: #
+8: B <
+
+mb : # A # B > A # # B <
+
+b : # A # B
+
+a : _
+
+s : A # # B
+
+A != B →
+r : # A B #
+
+b | r | a
+# A # B | # A B # | _
+
+t : # A # B # A B #
+
+1: #
+2: A
+3: #
+4: B
+5: #
+6: A
+7: B
+8: #
+
+1: #
+2: A
+3: # → 1: # , 2: A → # A - - -
+4: B → 2: A , 3: # → A # - - -
+5: # → 3: # , 4: B → # B - - -
+6: A → 4: B , 5: # → B # - - -
+7: B → 5: # , 6: A → # A - - -
+8: # → 6: A , 7: B → A B - - -
+
+ma : # A # B # A B #
+
+mark in ma? → no → stop
+
+1: #
+2: A → #A
+3: #
+4: B → #B
+5: #
+6: A → #A
+7: B
+8: # → B#
+
+<solution>#A #B #A B#</solution>
+
+---
+
+example 3
+
+<problem>#B B# #A B# #A #A</problem>
+
+1: #B → # B
+2: B# → B #
+3: #A → # A
+4: B# → B #
+5: #A → # A
+6: #A → # A
+
+# B B # # A B # # A # A
+
+t : # B B # # A B # # A # A
+
+1: #
+2: B
+3: B
+4: #
+5: #
+6: A
+7: B
+8: #
+9: #
+10: A
+11: #
+12: A
+
+1: #
+2: B
+3: B → 1: # , 2: B → # B - - -  (comment: note again how we start at position 3)
+4: # → 2: B , 3: B → B B - - -
+5: # → 3: B , 4: # → B # - - -
+6: A → 4: # , 5: # → # # - - - mark!
+7: B
+8: #
+9: #
+10: A
+11: #
+12: A
+
+mark after @ 6:
+
+ma : # B B # # A < B # # A # A
+
+mark in ma? → yes → continue
+
+mark before @ 6 - 3 = 3:  (comment: 3: is where we have to mark before)
+
+1: #
+2: B
+3: > B
+4: #
+5: #
+6: A <  (comment: index and mark after)
+7: B
+8: #
+9: #
+10: A
+11: #
+12: A
+
+mb : # B > B # # A < B # # A # A
+
+b : # B
+
+a : B # # A # A
+
+s : B # # A
+
+B != A →
+r : # B A #
+
+b | r | a
+# B | # B A # | B # # A # A
+
+t : # B # B A # B # # A # A
+
+...
+
+b | r | a
+# B # B | # A B # | A # # A
+
+t : # B # B # A B # A # # A
+
+1: #
+2: B
+3: #
+4: B
+5: #
+6: A
+7: B
+8: #
+9: A
+10: #
+11: #
+12: A
+
+1: #
+2: B
+3: # → 1: # , 2: B → # B - - -
+4: B → 2: B , 3: # → B # - - -
+5: # → 3: # , 4: B → # B - - -
+6: A → 4: B , 5: # → B # - - -
+7: B → 5: # , 6: A → # A - - -
+8: # → 6: A , 7: B → A B - - -
+9: A → 7: B , 8: # → B # - - -
+10: # → 8: # , 9: A → # A - - -
+11: # → 9: A , 10: # → A # - - -
+12: A → 10: # , 11: # → # # - - - mark!
+
+mark after @ 12:
+
+ma : # B # B # A B # A # # A <
+
+mark in ma? → yes → continue
+
+mark before @ 12 - 3 = 9:
+
+1: #
+2: B
+3: #
+4: B
+5: #
+6: A
+7: B
+8: #
+9: > A
+10: #
+11: #
+12: A <
+
+mb : # B # B # A B # > A # # A <
+
+b : # B # B # A B #
+
+a : _
+
+s : A # # A
+
+A == A →
+r : _
+
+b | r | a
+# B # B # A B # | _ | _
+
+t : # B # B # A B #
+
+1: #
+2: B
+3: #
+4: B
+5: #
+6: A
+7: B
+8: #
+
+1: #
+2: B
+3: # → 1: # , 2: B → # B - - -  (comment: IMPORTANT IMPORTANT - WE START AT POSITION 3:)
+4: B → 2: B , 3: # → B # - - -
+5: # → 3: # , 4: B → # B - - -
+6: A → 4: B , 5: # → B # - - -
+7: B → 5: # , 6: A → # A - - -
+8: # → 6: A , 7: B → A B - - -
+
+ma : # B # B # A B #
+
+mark in ma? → no → stop
+
+1: #
+2: B → #B  (comment: note again, we start at position 2! DO NOT MISS BRUH)
+3: #
+4: B → #B
+5: #
+6: A → #A
+7: B
+8: # → B#
+
+<solution>#B #B #A B#</solution>
+
+---
+
+The above examples should suffice. You must follow the template exactly. Do not miss anything. Do not add filler content like "Here is the computation" or "We have successfully..."
+
+When I say follow the template, I mean do NOT skip anything. You *must* do all the preliminary computation with the indexing and mark!-ing before the `ma` and `mb` sections, and other such things.
+
+I am once again saying: when you trying to put the mark after the character following two consecutive hashes: you should be doing
+
+1: char1
+2: char2
+3: char3 → 1: char1 , 2: char2 → char1 char2 - - -
+...and so on...
+
+AND NOT
+
+1: char1
+2: char2 → 1: char1 , 2: char2 → char1 char2 - - -
+3: char3 → 2: char2 , 3: char3 → char2 char3 - - -
+...and so on...
+
+where you are starting from position 2 instead of position 3 for mark checking. Do *NOT* do this.
+
+START FROM POSITION 3: WHEN TRYING TO FIND THE MARK!
+
+Be careful when a mark appears at the start or end of the sequence
+
+If we have
+
+ma : > char # # char < char ... char
+
+that means, b is _, s is char # # char, and a is char ... char
+
+and if we have
+
+ma : char ... char > char # # char <
+
+then a is _ instead.
+
+If we have
+
+> char # # char <
+
+both a and b are _, and s is char # # char.
+
+You will be prompted with
+
+<problem>...</problem>
+
+You reply with the computation and final solution in
+
+<solution>...</solution>
