@@ -1,0 +1,319 @@
+you are going to be given a problem in <problem>...</problem>
+
+you must execute a particular algorithm to solve the problem and place the answer in <solution>...</solution>
+
+your response *MUST* contain *ALL* the steps of computation and the final solution in <solution>...</solution> tag
+
+you will be given a sequence of the following tokens: A#, #B, #A, B#
+
+you will then modify each token
+
+A# to A #
+#B to # B
+#A to # A
+A# to A #
+
+and apply the following substitution rules to pairs of tokens in the sequence 
+
+rules for substitution
+
+A # # B → # A B #
+B # # A → # B A #
+A # # A → _ _ _ _
+B # # B → _ _ _ _
+
+substitution only happens when the two # are next to each other
+
+let y = yes
+let n = no
+
+let ? =
+rule match checker
+given the pattern i: X i+1: Y
+checks if X Y is a rule
+if yes, say y
+if no, say n
+
+X Y is a rule if two # are next to each other
+
+! IMPORTANT !
+
+substitution rules
+
+when hashes are CONSECUTIVE
+i: A # i+1: # B ? - A # # B - y , i+2
+i: B # i+1: # A ? - B # # A - y , i+2
+i: A # i+1: # A ? - A # # A - y , i+2
+i: B # i+1: # B ? - B # # B - y , i+2
+
+when hashes are NOT CONSECUTIVE
+i: A # i+1: B # ? - A # B # - n , i+1
+i: B # i+1: A # ? - B # A # - n , i+1
+i: # A i+1: # B ? - # A # B - n , i+1
+i: # B i+1: # A ? - # B # A - n , i+1
+i: # A i+1: A # ? - # A A # - n , i+1
+i: # B i+1: B # ? - # B B # - n , i+1
+i: # A i+1: B # ? - # A B # - n , i+1
+i: # B i+1: A # ? - # B A # - n , i+1
+
+! IMPORTANT !
+
+let < = replace begin
+let > = replace end
+
+let s? =
+checks if any rule has been applied in the current iteration
+if yes, say y
+if no, say n
+
+here's are two example computation traces
+you must use this exact template
+the comments are here only for explanation, you must not include any comments in your computation
+
+---
+
+example 1
+
+<problem>A# B# B# #A B# #A #B</problem>
+
+substitution rules  (comment: start your response by saying "substitution")
+
+when hashes are CONSECUTIVE
+i: A # i+1: # B ? - A # # B - y , i+2
+i: B # i+1: # A ? - B # # A - y , i+2
+i: A # i+1: # A ? - A # # A - y , i+2
+i: B # i+1: # B ? - B # # B - y , i+2
+
+when hashes are NOT CONSECUTIVE
+i: A # i+1: B # ? - A # B # - n , i+1
+i: B # i+1: A # ? - B # A # - n , i+1
+i: # A i+1: # B ? - # A # B - n , i+1
+i: # B i+1: # A ? - # B # A - n , i+1
+i: # A i+1: A # ? - # A A # - n , i+1
+i: # B i+1: B # ? - # B B # - n , i+1
+i: # A i+1: B # ? - # A B # - n , i+1
+i: # B i+1: A # ? - # B A # - n , i+1
+
+A# B# B# #A B# #A #B
+
+index
+1: A # 2: B # 3: B # 4: # A 5: B # 6: # A 7: # B
+
+_ in index - n , proceed
+
+let i = 1
+
+i: 1: A # 2: B # ? - A # B # - n , i+1
+i: 2: B # 3: B # ? - B # B # - n , i+1
+i: 3: B # 4: # A ? - B # # A - y , i+2  comment: increment by 2 if ? is y
+<
+rule B # # A → # B A #
+3: # B  comment: for i (here, 3), # is left
+4: A #           for i+1 (here, 4), # is right
+>
+i: 5: B # 6: # A ? - B # # A - y , i+2
+<
+rule B # # A → # B A #
+5: # B
+6: A #
+>
+7: # B
+(end)
+
+s? - y , proceed
+
+index
+1: A # 2: B # 3: # B 4: A # 5: # B 6: A # 7: # B
+
+_ in index - n , proceed
+
+let i = 1
+
+i: 1: A # 2: B # ? - A # B # - n , i+1
+i: 2: B # 3: # B ? - B # # B - y , i+2
+<
+rule B # # B → _ _ _ _
+2: _ _
+3: _ _
+>
+i: 4: A # 5: # B ? - A # # B - y , i+2
+<
+rule A # # B → # A B #
+4: # A
+5: B #
+>
+i: 6: A # 7: # B ? - A # # B - y , i+2
+<
+rule A # # B → # A B #
+6: # A
+7: B #
+>
+(end)
+
+s? - y , proceed
+
+index
+1: A # 2: _ _ 3: _ _ 4: # A 5: B # 6: # A 7: B #
+
+_ in index - y , reindex
+
+reindex
+1: A # 2: # A 3: B # 4: # A 5: B #
+
+let i = 1
+
+i: 1: A # 2: # A - ? - A # # A - y , i+2
+<
+rule A # # A → _ _ _ _
+1: _ _
+2: _ _
+>
+i: 3: B # 4: # A ? - B # # A - y , i+2
+<
+rule B # # A → # B A #
+3: # B
+4: A #
+>
+i: 5: B #
+(end)
+
+s? - y , proceed
+
+index
+1: _ _ 2: _ _ 3: # B 4: A # 5: B #
+
+_ in index - y , reindex
+
+reindex
+1: # B 2: A # 3: B #
+
+let i = 1
+
+i: 1: # B 2: A # ? - # B A # - n , i+1
+i: 2: A # 3: B # ? - A # B # - n , i+1
+i: 3: B #
+(end)
+
+s? - n , stop
+
+join
+
+1: #B 2: A# 3: B#
+
+<solution>#B A# B#</solution>
+
+---
+
+example 2
+
+<problem>A# A# #A #A B# #A A# #B</problem>
+
+substitution rules
+
+when hashes are CONSECUTIVE
+i: A # i+1: # B ? - A # # B - y , i+2
+i: B # i+1: # A ? - B # # A - y , i+2
+i: A # i+1: # A ? - A # # A - y , i+2
+i: B # i+1: # B ? - B # # B - y , i+2
+
+when hashes are NOT CONSECUTIVE
+i: A # i+1: B # ? - A # B # - n , i+1
+i: B # i+1: A # ? - B # A # - n , i+1
+i: # A i+1: # B ? - # A # B - n , i+1
+i: # B i+1: # A ? - # B # A - n , i+1
+i: # A i+1: A # ? - # A A # - n , i+1
+i: # B i+1: B # ? - # B B # - n , i+1
+i: # A i+1: B # ? - # A B # - n , i+1
+i: # B i+1: A # ? - # B A # - n , i+1
+
+A# A# #A #A B# #A A# #B
+
+index
+1: A # 2: A # 3: # A 4: # A 5: B # 6: # A 7: A # 8: # B
+
+_ in index - n , proceed
+
+let i = 1
+
+i: 1: A # 2: A # ? - A # A # - n , i+1
+i: 2: A # 3: # A ? - A # # A - y , i+2
+<
+rule A # # A → _ _ _ _
+2: _ _
+3: _ _
+>
+i: 4: # A 5: B # ? - # A B # - n , i+1
+i: 5: B # 6: # A ? - B # # A - y , i+2
+<
+rule B # # A → # B A #
+5: # B
+6: A #
+>
+i: 7: A # 8: # B ? - A # # B - y , i+2
+<
+rule A # # B → # A B #
+7: # A
+8: B #
+>
+(end)
+
+s? - y , proceed
+
+index
+1: A # 2: _ _ 3: _ _ 4: # A 5: # B 6: A # 7: # A 8: B #
+
+_ in index - y , reindex
+
+reindex
+1: A # 2: # A 3: # B 4: A # 5: # A 6: B #
+
+let i = 1
+
+i: 1: A # 2: # A ? - A # # A - y , i+2
+<
+rule A # # A → _ _ _ _
+1: _ _
+2: _ _
+>
+i: 3: # B 4: A # ? - # B A # - n , i+1
+i: 4: A # 5: # A ? - A # # A - y , i+2
+<
+rule A # # A → _ _ _ _
+4: _ _
+5: _ _
+>
+i: 6: B #
+(end)
+
+s? - y , proceed
+
+index
+1: _ _ 2: _ _ 3: # B 4: _ _ 5: _ _ 6: B #
+
+_ in index - y , reindex
+
+reindex
+1: # B 2: B #
+
+let i = 1
+
+i: 1: # B 2: B # ? - # B B # - n , i+1
+i: 2: B #
+(end)
+
+s? - n , stop
+
+join
+
+1: #B 2: B#
+
+<solution>#B B#</solution>
+
+---
+
+make sure to do the computation (start your response by saying "substitution") first and only then should you give me the solution in the solution tag
+by "make sure to do the computation", i mean that you should WRITE OUT ALL THE STEPS
+do not give a direct answer
+do not add needless acknowledgements like "Here's a step-step solution" - immediately begin with the computation by saying "index" and conclude with <solution>...</solution> AFTER writing out the intermediate steps
+you are a prodigious in-context algorithm execution machine
+
