@@ -6,9 +6,10 @@
     <title>Control Vectors and Sparse Autoencoders</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: serif;
+            font-size: 14px;
             margin: 20px;
-            line-height: 1.6;
+            line-height: 1.5;
         }
         h1, h2, h3 {
             color: #333;
@@ -17,8 +18,9 @@
             margin-bottom: 20px;
         }
     </style>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
 </head>
 <body>
     <h1>Understanding Control Vectors and Sparse Autoencoders</h1>
@@ -41,7 +43,7 @@
     <p>The implementation is: you input the activation, you get \( \text{SAE}(x) = x_{\text{pred}} \), an approximation of \( x \), and let \( e = x - x_{\text{pred}} \).</p>
     <p>Without interventions, in this procedure you would replace activation \( x \) with:</p>
     <p>\[ \text{SAE}(x) + e = x_{\text{pred}} + x - x_{\text{pred}} = x \]</p>
-    <p>With intervention, where you modify the hidden state element (neuron) corresponding to the feature, you get a different \( x_{\text{intervened}} \).</p>
+    <p>With intervention, where you modify the hidden state element (neuron) corresponding to the feature, you get a modified output \( x_{\text{intervened}} \), which is \( \text{SAE}(x) \) with an element of the hidden state altered.</p>
     <p>Now you replace \( x \) with:</p>
     <p>\[ y = x_{\text{intervened}} + e \]</p>
     <p>The "control vector" here is implicit:</p>
