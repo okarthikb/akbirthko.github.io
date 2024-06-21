@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mamba and the Next Phase of AI Research</title>
+    <style>
+        body {
+            font-family: Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1.2;
+            margin: 20px;
+        }
+        img.center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mamba and the Next Phase of AI Research</h1>
+    <p>Mamba may indicate the next phase of AI research.</p>
+    <p>This is not to say Mamba specifically beats transformers, but that the groundwork (Tri and Albert's new paper introduces the notions) has already been laid for architectures that will excel on multimodal tasks and extremely long timescales (think on the scale of months or years) relative to today's models. In fact, one should think of Mamba and its state space siblings as being complementary to transformers. Tri and Albert go over the intuitions behind SSMs in this video: <a href="https://m.youtube.com/watch?v=iUfUFKQLGBQ&si=aqRiLxDWAni1xg4i&t=217">Watch here</a>.</p>
+    <p>The real challenge is data and a suitable unsupervised objective, a combination that existed for LLMs to succeed. You see Ilya mention this on Dwarkesh, on why OAI gave up on robotics (because no huge datasets for training).</p>
+    <p>Consider why people aren't training LLMs on Git diffs to teach it actual policies to automate software: <a href="https://x.com/mike64_t/status/1803939879279112401?s=46">Read more</a>. It's because the diffs are mostly too redundant at the text level. This is partly why Git works so well; small edits between commits mean very delta compressible, but this level of redundancy at the text level would hurt learning. Humans don't learn writing software at the diff level. We look at changes between iterations at the conceptual level, not the diff level, and we grasp the concepts while processing lots of high-dimensional and compressible information in real time.</p>
+    <p>State space models are ideal for this, and the sort of fuzzy context compression over extremely long contexts they do is a much better model of what human brains do than transformers. Put simply, they're a much more general architecture when considering real-time multimodal data (transformers would likely still be used for text and similar data). Not only that, but for high-level control for agents and so forth (what people today call "orchestration" because they're too LLM-brained).</p>
+    <p>So, the architecture is not the primary rate limiter for AI in the long run; it's compute and datasets, and we can expect these to follow steady superlinear curves.</p>
+    <p>It's a bit like the Nearcyan joke: while you wait for the model to drop, you can make all the frontend, and when the model drops just plug it in.</p>
+    <p>Similarly, the architectures are there, and once enough compute comes by (both in data centers and to regular users), and people figure out how to make these large multimodal datasets for training and suitable objectives, you can just throw in the architecture after buffing out some issues.</p>
+    <p>I used to think a company working on transformers is a bear signal for AI. This is in fact not the case at all if we consult the holy plot:</p>
+    <img src="https://raw.githubusercontent.com/okarthikb/site/main/images/IMG_9051.jpeg" alt="Holy Plot" class="center">
+    <p>Transformers fall under the grey plot, and people choose it today for SoTA general systems since it best fits with the current compute regime and market. State space models, JEPA, diffusion for planning, etc., fall under the red curve. They're more general architectures, but we have to wait for them to shine.</p>
+</body>
+</html>
